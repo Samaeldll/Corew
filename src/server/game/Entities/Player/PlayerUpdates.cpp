@@ -41,6 +41,7 @@
 #include "Vehicle.h"
 #include "WeatherMgr.h"
 #include "WorldStatePackets.h"
+#include "DisableMgr.h"
 #include <fmt/printf.h>
 
 // TODO: this import is not necessary for compilation and marked as unused by the IDE
@@ -1183,6 +1184,14 @@ void Player::UpdateZone(uint32 newZone, uint32 newArea)
     UpdateLocalChannels(newZone);
 
     UpdateZoneDependentAuras(newZone);
+
+    for (auto const& [__, aura] : m_ownedAuras)
+    {
+        uint32 auraId = aura->GetSpellInfo()->Id;
+
+        if (DisableMgr::IsDisabledFor(DISABLE_TYPE_SPELL, auraId, this, SPELL_ALLOW_ONLY_MAP))
+            RemoveAurasDueToSpell(auraId);
+    }
 }
 
 void Player::UpdateEquipSpellsAtFormChange()

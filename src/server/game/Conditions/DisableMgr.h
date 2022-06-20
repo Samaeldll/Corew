@@ -47,9 +47,11 @@ enum SpellDisableTypes
     SPELL_DISABLE_MAP               = 0x10,
     SPELL_DISABLE_AREA              = 0x20,
     SPELL_DISABLE_LOS               = 0x40,
-    MAX_SPELL_DISABLE_TYPE = (  SPELL_DISABLE_PLAYER | SPELL_DISABLE_CREATURE | SPELL_DISABLE_PET |
-                                SPELL_DISABLE_DEPRECATED_SPELL | SPELL_DISABLE_MAP | SPELL_DISABLE_AREA |
-                                SPELL_DISABLE_LOS)
+    SPELL_ALLOW_ONLY_MAP            = 0x80,
+
+    MAX_SPELL_DISABLE_TYPE = (SPELL_DISABLE_PLAYER | SPELL_DISABLE_CREATURE | SPELL_DISABLE_PET |
+                              SPELL_DISABLE_DEPRECATED_SPELL | SPELL_DISABLE_MAP | SPELL_DISABLE_AREA |
+                              SPELL_DISABLE_LOS | SPELL_ALLOW_ONLY_MAP)
 };
 
 namespace DisableMgr
