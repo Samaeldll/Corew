@@ -994,7 +994,7 @@ public:
     void LoadQuestPOI();
 
     void LoadNPCSpellClickSpells();
-	void LoadNpcTexts();
+	void LoadNpcText();
 
     void LoadGameTele();
 
