@@ -340,7 +340,7 @@ public:
 	
 	static bool HandleReloadAllGameobjectCommand(ChatHandler* handler)
     {
-		HandleReloadGameobjectTemplateCommand(Handler)
+		HandleReloadGameobjectTemplateCommand(Handler);
         return true;
     }
 
