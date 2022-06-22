@@ -65,8 +65,8 @@ public:
             { "locales",                       HandleReloadAllLocalesCommand,                 SEC_ADMINISTRATOR, Console::Yes },
             { "loot",                          HandleReloadAllLootCommand,                    SEC_ADMINISTRATOR, Console::Yes },
             { "npc",                           HandleReloadAllNpcCommand,                     SEC_ADMINISTRATOR, Console::Yes },
-			{ "creature",                      HandleReloadAllCreatureCommand,                SEC_ADMINISTRATOR, Console::Yes },
-			{ "gameobject",                    HandleReloadAllGameobjectCommand,                SEC_ADMINISTRATOR, Console::Yes },
+			{ "creature",                      HandleReloadAllCreatureCommand,                SEC_ADMINISTRATOR, Console::Yes }, //+Custom
+			{ "gameobject",                    HandleReloadAllGameobjectCommand,              SEC_ADMINISTRATOR, Console::Yes }, //+Custom
             { "quest",                         HandleReloadAllQuestCommand,                   SEC_ADMINISTRATOR, Console::Yes },
             { "scripts",                       HandleReloadAllScriptsCommand,                 SEC_ADMINISTRATOR, Console::Yes },
             { "spell",                         HandleReloadAllSpellCommand,                   SEC_ADMINISTRATOR, Console::Yes },
@@ -202,6 +202,8 @@ public:
         HandleReloadAllQuestCommand(handler);
         HandleReloadAllSpellCommand(handler);
         HandleReloadAllItemCommand(handler);
+		HandleReloadAllCreatureCommand(handler);
+		HandleReloadAllGameobjectCommand(handler);
         HandleReloadAllGossipsCommand(handler);
         HandleReloadAllLocalesCommand(handler);
 
