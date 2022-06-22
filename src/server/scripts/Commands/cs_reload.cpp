@@ -324,7 +324,7 @@ public:
         return true;
     }
 	
-	Static bool HandleReloadAllCreatureCommand(ChatHandler* handler)
+	static bool HandleReloadAllCreatureCommand(ChatHandler* handler)
     {
         HandleReloadCreatureTemplateCommand(handler);
         return true;
