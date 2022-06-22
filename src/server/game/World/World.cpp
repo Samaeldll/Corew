@@ -843,9 +843,6 @@ void World::SetInitialWorldSettings()
     LOG_INFO("server.loading", "Loading UNIT_NPC_FLAG_SPELLCLICK Data..."); // must be after LoadQuests
     sObjectMgr->LoadNPCSpellClickSpells();
 
-	LOG_INFO("server.loading", "Loading Npc Text Data..."); // must be after LoadQuests
-    sObjectMgr->LoadNpcText();
-
     LOG_INFO("server.loading", "Loading Vehicle Template Accessories...");
     sObjectMgr->LoadVehicleTemplateAccessories();                // must be after LoadCreatureTemplates() and LoadNPCSpellClickSpells()
 
