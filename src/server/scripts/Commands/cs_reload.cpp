@@ -389,7 +389,7 @@ public:
 	static bool HandleReloadNpcTextCommand(ChatHandler* handler)
     {
         LOG_INFO("server.loading", "Loading Npc Text... (`npc_text`)");
-        sObjectMgr->LoadNpcTexts();
+        sObjectMgr->LoadNpcText();
         handler->SendGlobalGMSysMessage("DB table `npc_text` reloaded.");
         return true;
     }
