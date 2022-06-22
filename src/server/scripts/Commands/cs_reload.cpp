@@ -65,6 +65,8 @@ public:
             { "locales",                       HandleReloadAllLocalesCommand,                 SEC_ADMINISTRATOR, Console::Yes },
             { "loot",                          HandleReloadAllLootCommand,                    SEC_ADMINISTRATOR, Console::Yes },
             { "npc",                           HandleReloadAllNpcCommand,                     SEC_ADMINISTRATOR, Console::Yes },
+			{ "creature",                      HandleReloadAllCreatureCommand,                SEC_ADMINISTRATOR, Console::Yes },
+			{ "gameobject",                    HandleReloadAllGameobjectCommand,                SEC_ADMINISTRATOR, Console::Yes },
             { "quest",                         HandleReloadAllQuestCommand,                   SEC_ADMINISTRATOR, Console::Yes },
             { "scripts",                       HandleReloadAllScriptsCommand,                 SEC_ADMINISTRATOR, Console::Yes },
             { "spell",                         HandleReloadAllSpellCommand,                   SEC_ADMINISTRATOR, Console::Yes },
@@ -92,10 +94,11 @@ public:
             { "creature_questender",           HandleReloadCreatureQuestEnderCommand,         SEC_ADMINISTRATOR, Console::Yes },
             { "creature_linked_respawn",       HandleReloadLinkedRespawnCommand,              SEC_ADMINISTRATOR, Console::Yes },
             { "creature_loot_template",        HandleReloadLootTemplatesCreatureCommand,      SEC_ADMINISTRATOR, Console::Yes },
-            { "creature_movement_override",     HandleReloadCreatureMovementOverrideCommand,    SEC_ADMINISTRATOR, Console::Yes},
-            { "creature_onkill_reputation",     HandleReloadOnKillReputationCommand,           SEC_ADMINISTRATOR, Console::Yes },
+            { "creature_movement_override",    HandleReloadCreatureMovementOverrideCommand,   SEC_ADMINISTRATOR, Console::Yes},
+            { "creature_onkill_reputation",    HandleReloadOnKillReputationCommand,           SEC_ADMINISTRATOR, Console::Yes },
             { "creature_queststarter",         HandleReloadCreatureQuestStarterCommand,       SEC_ADMINISTRATOR, Console::Yes },
-            { "creature_template",             HandleReloadCreatureTemplateCommand,           SEC_ADMINISTRATOR, Console::Yes },
+            { "creature_template",             HandleReloadCreatureTemplateCommand,           SEC_ADMINISTRATOR, Console::Yes }, //+Custom
+			{ "creature_template_addon",       HandleReloadCreatureTemplateAddonCommand,      SEC_ADMINISTRATOR, Console::Yes }, //+Custom
             { "disables",                      HandleReloadDisablesCommand,                   SEC_ADMINISTRATOR, Console::Yes },
             { "disenchant_loot_template",      HandleReloadLootTemplatesDisenchantCommand,    SEC_ADMINISTRATOR, Console::Yes },
             { "event_scripts",                 HandleReloadEventScriptsCommand,               SEC_ADMINISTRATOR, Console::Yes },
@@ -110,12 +113,14 @@ public:
             { "gossip_menu",                   HandleReloadGossipMenuCommand,                 SEC_ADMINISTRATOR, Console::Yes },
             { "gossip_menu_option",            HandleReloadGossipMenuOptionCommand,           SEC_ADMINISTRATOR, Console::Yes },
             { "item_enchantment_template",     HandleReloadItemEnchantementsCommand,          SEC_ADMINISTRATOR, Console::Yes },
+			{ "item_template",           	   HandleReloadItemTemplateCommand,          	  SEC_ADMINISTRATOR, Console::Yes }, //+Custom
             { "item_loot_template",            HandleReloadLootTemplatesItemCommand,          SEC_ADMINISTRATOR, Console::Yes },
             { "item_set_names",                HandleReloadItemSetNamesCommand,               SEC_ADMINISTRATOR, Console::Yes },
             { "lfg_dungeon_rewards",           HandleReloadLfgRewardsCommand,                 SEC_ADMINISTRATOR, Console::Yes },
             { "achievement_reward_locale",     HandleReloadLocalesAchievementRewardCommand,   SEC_ADMINISTRATOR, Console::Yes },
             { "creature_template_locale",      HandleReloadLocalesCreatureCommand,            SEC_ADMINISTRATOR, Console::Yes },
             { "creature_text_locale",          HandleReloadLocalesCreatureTextCommand,        SEC_ADMINISTRATOR, Console::Yes },
+			{ "gameobject_template",    	   HandleReloadGameobjectTemplateCommand,         SEC_ADMINISTRATOR, Console::Yes }, //+Custom
             { "gameobject_template_locale",    HandleReloadLocalesGameobjectCommand,          SEC_ADMINISTRATOR, Console::Yes },
             { "gossip_menu_option_locale",     HandleReloadLocalesGossipMenuOptionCommand,    SEC_ADMINISTRATOR, Console::Yes },
             { "item_template_locale",          HandleReloadLocalesItemCommand,                SEC_ADMINISTRATOR, Console::Yes },
@@ -133,6 +138,7 @@ public:
             { "npc_spellclick_spells",         HandleReloadSpellClickSpellsCommand,           SEC_ADMINISTRATOR, Console::Yes },
             { "npc_trainer",                   HandleReloadNpcTrainerCommand,                 SEC_ADMINISTRATOR, Console::Yes },
             { "npc_vendor",                    HandleReloadNpcVendorCommand,                  SEC_ADMINISTRATOR, Console::Yes },
+			{ "npc_text",                      HandleReloadNpcTextCommand,                    SEC_ADMINISTRATOR, Console::Yes }, //+Custom
             { "page_text",                     HandleReloadPageTextsCommand,                  SEC_ADMINISTRATOR, Console::Yes },
             { "pickpocketing_loot_template",   HandleReloadLootTemplatesPickpocketingCommand, SEC_ADMINISTRATOR, Console::Yes },
             { "points_of_interest",            HandleReloadPointsOfInterestCommand,           SEC_ADMINISTRATOR, Console::Yes },
@@ -254,6 +260,7 @@ public:
     {
         HandleReloadNpcTrainerCommand(handler);
         HandleReloadNpcVendorCommand(handler);
+		HandleReloadNpcTextCommand(handler);
         HandleReloadPointsOfInterestCommand(handler);
         HandleReloadSpellClickSpellsCommand(handler);
         return true;
@@ -316,11 +323,24 @@ public:
         HandleReloadPointsOfInterestCommand(handler);
         return true;
     }
+	
+	Static bool HandleReloadAllCreatureCommand(ChatHandler* handler)
+    {
+        HandleReloadCreatureTemplateCommand(handler);
+        return true;
+    }
 
     static bool HandleReloadAllItemCommand(ChatHandler* handler)
     {
         HandleReloadPageTextsCommand(handler);
+		HandleReloadItemTemplateCommand(handler);
         HandleReloadItemEnchantementsCommand(handler);
+        return true;
+    }
+	
+	static bool HandleReloadAllGameobjectCommand(ChatHandler* handler)
+    {
+		HandleReloadGameobjectTemplateCommand(Handler)
         return true;
     }
 
@@ -349,6 +369,38 @@ public:
         handler->SendGlobalGMSysMessage("World config settings reloaded.");
         return true;
     }
+	
+	static bool HandleReloadItemTemplateCommand(ChatHandler* handler)
+    {
+        LOG_INFO("server.loading", "Loading Item template... (`item_template`)");
+        sObjectMgr->LoadItemTemplates();
+        handler->SendGlobalGMSysMessage("DB table `item_template` reloaded.");
+        return true;
+    }
+	
+	static bool HandleReloadCreatureTemplateAddonCommand(ChatHandler* handler)
+    {
+        LOG_INFO("server.loading", "Loading Creature Template Addon... (`creature_template_addon`)");
+        sObjectMgr->LoadCreatureTemplateAddons();
+        handler->SendGlobalGMSysMessage("DB table `creature_template_addon` reloaded.");
+        return true;
+    }
+	
+	static bool HandleReloadNpcTextCommand(ChatHandler* handler)
+    {
+        LOG_INFO("server.loading", "Loading Npc Text... (`npc_text`)");
+        sObjectMgr->LoadNpcTexts();
+        handler->SendGlobalGMSysMessage("DB table `npc_text` reloaded.");
+        return true;
+    }
+	
+	static bool HandleReloadGameobjectTemplateCommand(ChatHandler* handler)
+    {
+        LOG_INFO("server.loading", "Loading Gameobject Template... (`gameobject_template`)");
+        sObjectMgr->LoadGameObjectTemplate();
+        handler->SendGlobalGMSysMessage("DB table `gameobject_template` reloaded.");
+        return true;
+    }
 
     static bool HandleReloadDungeonAccessCommand(ChatHandler* handler)
     {
@@ -357,6 +409,7 @@ public:
         handler->SendGlobalGMSysMessage("DB tables `dungeon_access_template` AND `dungeon_access_requirements` reloaded.");
         return true;
     }
+	
 
     static bool HandleReloadAchievementCriteriaDataCommand(ChatHandler* handler)
     {
@@ -450,9 +503,9 @@ public:
         return true;
     }
 
-    static bool HandleReloadCreatureTemplateCommand(ChatHandler* handler, std::string_view args)
+    static bool HandleReloadCreatureTemplateCommand(ChatHandler* handler, /*std::string_view args*/)
     {
-        if (args.empty())
+        /*if (args.empty())
             return false;
 
         for (std::string_view entryStr : Warhead::Tokenize(args, ' ', false))
@@ -482,9 +535,11 @@ public:
 
             sObjectMgr->LoadCreatureTemplate(fields);
             sObjectMgr->CheckCreatureTemplate(cInfo);
-        }
+        } Standard Method */ 
 
-        handler->SendGlobalGMSysMessage("Creature template reloaded.");
+        LOG_INFO("server.loading", "Loading Creature template... (`creature_template`)");
+        sObjectMgr->LoadCreatureTemplates();
+        handler->SendGlobalGMSysMessage("DB table `creature_template` reloaded.");
         return true;
     }
 
