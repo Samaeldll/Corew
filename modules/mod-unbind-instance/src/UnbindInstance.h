@@ -38,6 +38,9 @@ class UnbindInstance
 public:
     static UnbindInstance* instance();
 
+    inline bool IsEnable() { return _isEnable; }
+    inline bool IsEnableCommand() { return _isEnableCommand; }
+
     void Init();
     void LoadConfig();
     void LoadCostData();

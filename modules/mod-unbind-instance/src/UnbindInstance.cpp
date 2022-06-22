@@ -133,6 +133,9 @@ namespace
 
 void UnbindInstance::Init()
 {
+    if (!_isEnable)
+        return;
+
     LOG_INFO("module.unbind", "Загрузка вариантов стоимости сброса кд...");
     LoadCostData();
 }
