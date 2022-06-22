@@ -503,7 +503,7 @@ public:
         return true;
     }
 
-    static bool HandleReloadCreatureTemplateCommand(ChatHandler* handler, /*std::string_view args*/)
+    static bool HandleReloadCreatureTemplateCommand(ChatHandler* handler /*std::string_view args*/)
     {
         /*if (args.empty())
             return false;
