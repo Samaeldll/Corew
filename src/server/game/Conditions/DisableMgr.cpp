@@ -134,7 +134,7 @@ namespace DisableMgr
                         }
                     }
 
-                    if (flags & SPELL_ALLOWONLY_MAP)
+                    if (flags & SPELL_ALLOW_ONLY_MAP)
                     {
                         for (std::string_view mapStr : Warhead::Tokenize(params_0, ',', true))
                         {
