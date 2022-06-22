@@ -134,6 +134,17 @@ namespace DisableMgr
                         }
                     }
 
+                    if (flags & SPELL_ALLOW_ONLY_MAP)
+                    {
+                        for (std::string_view mapStr : Warhead::Tokenize(params_0, ',', true))
+                        {
+                            if (Optional<uint32> mapId = Warhead::StringTo<uint32>(mapStr))
+                                data.params[0].insert(*mapId);
+                            else
+                                LOG_ERROR("sql.sql", "Disable allow only map '{}' for spell {} is invalid, skipped.", mapStr, entry);
+                        }
+                    }
+
                     // xinef: if spell has disabled los, add flag
                     if (flags & SPELL_DISABLE_LOS)
                     {
@@ -322,6 +333,12 @@ namespace DisableMgr
                         if ((spellFlags & SPELL_DISABLE_PLAYER && unit->GetTypeId() == TYPEID_PLAYER) ||
                                 (unit->GetTypeId() == TYPEID_UNIT && ((unit->IsPet() && spellFlags & SPELL_DISABLE_PET) || spellFlags & SPELL_DISABLE_CREATURE)))
                         {
+                            if (spellFlags & SPELL_ALLOW_ONLY_MAP)
+                            {
+                                auto const& mapIds = itr->second.params[0];
+                                return mapIds.find(unit->GetMapId()) == mapIds.end();
+                            }
+
                             if (spellFlags & SPELL_DISABLE_MAP)
                             {
                                 std::set<uint32> const& mapIds = itr->second.params[0];
