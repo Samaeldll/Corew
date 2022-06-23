@@ -90,7 +90,7 @@ public:
             LOG_FATAL("module.antiad", ">> Regular expression failed loaded ({})", _pattern);
 
             // Set disable module
-            sModulesConfig->SetOption<bool>("AntiAD.Enable", false);
+            sModulesConfig->SetOption("AntiAD.Enable", false);
         }
 
         LOG_INFO("module.antiad", "");
@@ -216,17 +216,6 @@ class AntiAD_World : public WorldScript
 {
 public:
     AntiAD_World() : WorldScript("AntiAD_World") { }
-
-    void OnAfterConfigLoad(bool /*reload*/) override
-    {
-        sModulesConfig->AddOption({ "AntiAD.Enable",
-            "AntiAD.Send.GMMessage.Enable",
-            "AntiAD.Send.SelfMessage.Enable",
-            "AntiAD.Mute.Player.Enable",
-            "AntiAD.Mute.GM.Enable",
-            "AntiAD.Mute.Count",
-            "AntiAD.Check.Channels" });
-    }
 
     void OnStartup() override
     {

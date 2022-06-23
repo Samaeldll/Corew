@@ -169,12 +169,6 @@ class GuildLevelSystem_World : public WorldScript
 public:
     GuildLevelSystem_World() : WorldScript("GuildLevelSystem_World") { }
 
-    void OnAfterConfigLoad(bool /*reload*/) override
-    {
-        sModulesConfig->AddOption<bool>("GLS.Enable");
-        sModulesConfig->AddOption<bool>("GLS.Criteria.ShowItems.Enable");
-    }
-
     void OnStartup() override
     {
         if (!MOD_CONF_GET_BOOL("GLS.Enable"))
