@@ -261,23 +261,35 @@ public:
         return true;
     }
 
-    static bool HandleDeserterRemoveAll(ChatHandler* handler, bool isInstance)
+    static bool HandleDeserterRemoveAll(ChatHandler* handler, bool isInstance, Optional<std::string_view> maxTime)
     {
-        CharacterDatabase.Query("DELETE FROM character_aura WHERE spell = {} AND remainTime <= 1800000", isInstance ? LFG_SPELL_DUNGEON_DESERTER : BG_SPELL_DESERTER);
+        Seconds remainTime = isInstance ? 1800s : 900s;
 
-        std::shared_lock<std::shared_mutex> lock(*HashMapHolder<Player>::GetLock());
-        HashMapHolder<Player>::MapType const& onlinePlayerList = ObjectAccessor::GetPlayers();
-        for (HashMapHolder<Player>::MapType::const_iterator itr = onlinePlayerList.begin(); itr != onlinePlayerList.end(); ++itr)
+        if (maxTime)
+            remainTime = Warhead::Time::TimeStringTo(*maxTime);
+
+        if (remainTime == 0s)
         {
-            Player* player = itr->second;
-            Aura* aura = player->GetAura(isInstance ? LFG_SPELL_DUNGEON_DESERTER : BG_SPELL_DESERTER);
-            if (aura && aura->GetDuration() <= 1800000)
-            {
-                player->RemoveAura(isInstance ? LFG_SPELL_DUNGEON_DESERTER : BG_SPELL_DESERTER);
-            }
+            handler->SendSysMessage(LANG_BAD_VALUE);
+            handler->SetSentErrorMessage(true);
+            return false;
         }
 
-        handler->PSendSysMessage("%s Deserter has been removed from all players", isInstance ? "Instance" : "Battleground");
+        if (remainTime < 0s)
+            CharacterDatabase.Execute("DELETE FROM character_aura WHERE spell = {}", isInstance ? LFG_SPELL_DUNGEON_DESERTER : BG_SPELL_DESERTER);
+        else
+            CharacterDatabase.Execute("DELETE FROM character_aura WHERE spell = {} AND remainTime <= {}", isInstance ? LFG_SPELL_DUNGEON_DESERTER : BG_SPELL_DESERTER, remainTime.count());
+
+        std::shared_lock<std::shared_mutex> lock(*HashMapHolder<Player>::GetLock());
+
+        for (auto const& [guid, player] : ObjectAccessor::GetPlayers())
+        {
+            Aura* aura = player->GetAura(isInstance ? LFG_SPELL_DUNGEON_DESERTER : BG_SPELL_DESERTER);
+            if (aura && (remainTime < 0s || Seconds(aura->GetDuration()) <= remainTime))
+                player->RemoveAura(isInstance ? LFG_SPELL_DUNGEON_DESERTER : BG_SPELL_DESERTER);
+        }
+
+        handler->PSendSysMessage("{} Deserter has been removed from all players", isInstance ? "Instance" : "Battleground");
         return true;
     }
 
@@ -305,14 +317,14 @@ public:
         return HandleDeserterRemove(handler, player, false);
     }
 
-    static bool HandleDeserterInstanceRemoveAll(ChatHandler* handler)
+    static bool HandleDeserterInstanceRemoveAll(ChatHandler* handler, Optional<std::string> maxTime)
     {
-        return HandleDeserterRemoveAll(handler, true);
+        return HandleDeserterRemoveAll(handler, true, maxTime);
     }
 
-    static bool HandleDeserterBGRemoveAll(ChatHandler* handler)
+    static bool HandleDeserterBGRemoveAll(ChatHandler* handler, Optional<std::string> maxTime)
     {
-        return HandleDeserterRemoveAll(handler, false);
+        return HandleDeserterRemoveAll(handler, false, maxTime);
     }
 };
 
