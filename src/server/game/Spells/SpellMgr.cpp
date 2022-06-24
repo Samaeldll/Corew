@@ -2718,14 +2718,14 @@ void SpellMgr::LoadSpellInfoStore()
         if (!mSpellInfoMap[spellIndex])
             continue;
 
-        for (SpellEffectInfo const& spellEffectInfo : mSpellInfoMap[spellIndex]->GetEffects())
+        /*for (SpellEffectInfo const& spellEffectInfo : mSpellInfoMap[spellIndex]->GetEffects())
         {
             //ASSERT(effect.EffectIndex < MAX_SPELL_EFFECTS, "MAX_SPELL_EFFECTS must be at least {}", effect.EffectIndex + 1);
             ASSERT(spellEffectInfo.Effect < TOTAL_SPELL_EFFECTS, "TOTAL_SPELL_EFFECTS must be at least {}", spellEffectInfo.Effect + 1);
             ASSERT(spellEffectInfo.ApplyAuraName < TOTAL_AURAS, "TOTAL_AURAS must be at least {}", spellEffectInfo.ApplyAuraName + 1);
             ASSERT(spellEffectInfo.TargetA.GetTarget() < TOTAL_SPELL_TARGETS, "TOTAL_SPELL_TARGETS must be at least {}", spellEffectInfo.TargetA.GetTarget() + 1);
             ASSERT(spellEffectInfo.TargetB.GetTarget() < TOTAL_SPELL_TARGETS, "TOTAL_SPELL_TARGETS must be at least {}", spellEffectInfo.TargetB.GetTarget() + 1);
-        }
+        }*/
     }
 
     LOG_INFO("server.loading", ">> Loaded spell custom attributes in {} ms", GetMSTimeDiffToNow(oldMSTime));
