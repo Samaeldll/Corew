@@ -65,8 +65,8 @@ public:
             { "locales",                       HandleReloadAllLocalesCommand,                 SEC_ADMINISTRATOR, Console::Yes },
             { "loot",                          HandleReloadAllLootCommand,                    SEC_ADMINISTRATOR, Console::Yes },
             { "npc",                           HandleReloadAllNpcCommand,                     SEC_ADMINISTRATOR, Console::Yes },
-			{ "creature",                      HandleReloadAllCreatureCommand,                SEC_ADMINISTRATOR, Console::Yes }, //+Custom
-			{ "gameobject",                    HandleReloadAllGameobjectCommand,              SEC_ADMINISTRATOR, Console::Yes }, //+Custom
+            { "creature",                      HandleReloadAllCreatureCommand,                SEC_ADMINISTRATOR, Console::Yes }, //+Custom
+            { "gameobject",                    HandleReloadAllGameobjectCommand,              SEC_ADMINISTRATOR, Console::Yes }, //+Custom
             { "quest",                         HandleReloadAllQuestCommand,                   SEC_ADMINISTRATOR, Console::Yes },
             { "scripts",                       HandleReloadAllScriptsCommand,                 SEC_ADMINISTRATOR, Console::Yes },
             { "spell",                         HandleReloadAllSpellCommand,                   SEC_ADMINISTRATOR, Console::Yes },
@@ -99,7 +99,7 @@ public:
             { "creature_onkill_reputation",    HandleReloadOnKillReputationCommand,           SEC_ADMINISTRATOR, Console::Yes },
             { "creature_queststarter",         HandleReloadCreatureQuestStarterCommand,       SEC_ADMINISTRATOR, Console::Yes },
             { "creature_template",             HandleReloadCreatureTemplateCommand,           SEC_ADMINISTRATOR, Console::Yes }, //+Custom
-			{ "creature_template_addon",       HandleReloadCreatureTemplateAddonCommand,      SEC_ADMINISTRATOR, Console::Yes }, //+Custom
+            { "creature_template_addon",       HandleReloadCreatureTemplateAddonCommand,      SEC_ADMINISTRATOR, Console::Yes }, //+Custom
             { "disables",                      HandleReloadDisablesCommand,                   SEC_ADMINISTRATOR, Console::Yes },
             { "disenchant_loot_template",      HandleReloadLootTemplatesDisenchantCommand,    SEC_ADMINISTRATOR, Console::Yes },
             { "event_scripts",                 HandleReloadEventScriptsCommand,               SEC_ADMINISTRATOR, Console::Yes },
@@ -114,14 +114,14 @@ public:
             { "gossip_menu",                   HandleReloadGossipMenuCommand,                 SEC_ADMINISTRATOR, Console::Yes },
             { "gossip_menu_option",            HandleReloadGossipMenuOptionCommand,           SEC_ADMINISTRATOR, Console::Yes },
             { "item_enchantment_template",     HandleReloadItemEnchantementsCommand,          SEC_ADMINISTRATOR, Console::Yes },
-			{ "item_template",           	   HandleReloadItemTemplateCommand,          	  SEC_ADMINISTRATOR, Console::Yes }, //+Custom
+            { "item_template",                  HandleReloadItemTemplateCommand,                SEC_ADMINISTRATOR, Console::Yes }, //+Custom
             { "item_loot_template",            HandleReloadLootTemplatesItemCommand,          SEC_ADMINISTRATOR, Console::Yes },
             { "item_set_names",                HandleReloadItemSetNamesCommand,               SEC_ADMINISTRATOR, Console::Yes },
             { "lfg_dungeon_rewards",           HandleReloadLfgRewardsCommand,                 SEC_ADMINISTRATOR, Console::Yes },
             { "achievement_reward_locale",     HandleReloadLocalesAchievementRewardCommand,   SEC_ADMINISTRATOR, Console::Yes },
             { "creature_template_locale",      HandleReloadLocalesCreatureCommand,            SEC_ADMINISTRATOR, Console::Yes },
             { "creature_text_locale",          HandleReloadLocalesCreatureTextCommand,        SEC_ADMINISTRATOR, Console::Yes },
-			{ "gameobject_template",    	   HandleReloadGameobjectTemplateCommand,         SEC_ADMINISTRATOR, Console::Yes }, //+Custom
+            { "gameobject_template",           HandleReloadGameobjectTemplateCommand,         SEC_ADMINISTRATOR, Console::Yes }, //+Custom
             { "gameobject_template_locale",    HandleReloadLocalesGameobjectCommand,          SEC_ADMINISTRATOR, Console::Yes },
             { "gossip_menu_option_locale",     HandleReloadLocalesGossipMenuOptionCommand,    SEC_ADMINISTRATOR, Console::Yes },
             { "item_template_locale",          HandleReloadLocalesItemCommand,                SEC_ADMINISTRATOR, Console::Yes },
@@ -139,7 +139,7 @@ public:
             { "npc_spellclick_spells",         HandleReloadSpellClickSpellsCommand,           SEC_ADMINISTRATOR, Console::Yes },
             { "npc_trainer",                   HandleReloadNpcTrainerCommand,                 SEC_ADMINISTRATOR, Console::Yes },
             { "npc_vendor",                    HandleReloadNpcVendorCommand,                  SEC_ADMINISTRATOR, Console::Yes },
-			{ "npc_text",                      HandleReloadNpcTextCommand,                    SEC_ADMINISTRATOR, Console::Yes }, //+Custom
+            { "npc_text",                      HandleReloadNpcTextCommand,                    SEC_ADMINISTRATOR, Console::Yes }, //+Custom
             { "page_text",                     HandleReloadPageTextsCommand,                  SEC_ADMINISTRATOR, Console::Yes },
             { "pickpocketing_loot_template",   HandleReloadLootTemplatesPickpocketingCommand, SEC_ADMINISTRATOR, Console::Yes },
             { "points_of_interest",            HandleReloadPointsOfInterestCommand,           SEC_ADMINISTRATOR, Console::Yes },
@@ -203,8 +203,8 @@ public:
         HandleReloadAllQuestCommand(handler);
         HandleReloadAllSpellCommand(handler);
         HandleReloadAllItemCommand(handler);
-		HandleReloadAllCreatureCommand(handler);
-		HandleReloadAllGameobjectCommand(handler);
+        HandleReloadAllCreatureCommand(handler);
+        HandleReloadAllGameobjectCommand(handler);
         HandleReloadAllGossipsCommand(handler);
         HandleReloadAllLocalesCommand(handler);
 
@@ -263,7 +263,7 @@ public:
     {
         HandleReloadNpcTrainerCommand(handler);
         HandleReloadNpcVendorCommand(handler);
-		HandleReloadNpcTextCommand(handler);
+        HandleReloadNpcTextCommand(handler);
         HandleReloadPointsOfInterestCommand(handler);
         HandleReloadSpellClickSpellsCommand(handler);
         return true;
@@ -327,7 +327,7 @@ public:
         return true;
     }
 
-	static bool HandleReloadAllCreatureCommand(ChatHandler* handler)
+    static bool HandleReloadAllCreatureCommand(ChatHandler* handler)
     {
         HandleReloadCreatureTemplateCommand(handler);
         return true;
@@ -336,14 +336,14 @@ public:
     static bool HandleReloadAllItemCommand(ChatHandler* handler)
     {
         HandleReloadPageTextsCommand(handler);
-		HandleReloadItemTemplateCommand(handler);
+        HandleReloadItemTemplateCommand(handler);
         HandleReloadItemEnchantementsCommand(handler);
         return true;
     }
 
-	static bool HandleReloadAllGameobjectCommand(ChatHandler* handler)
+    static bool HandleReloadAllGameobjectCommand(ChatHandler* handler)
     {
-		HandleReloadGameobjectTemplateCommand(handler);
+        HandleReloadGameobjectTemplateCommand(handler);
         return true;
     }
 
@@ -374,7 +374,7 @@ public:
         return true;
     }
 
-	static bool HandleReloadItemTemplateCommand(ChatHandler* handler)
+    static bool HandleReloadItemTemplateCommand(ChatHandler* handler)
     {
         LOG_INFO("server.loading", "Loading Item template... (`item_template`)");
         sObjectMgr->LoadItemTemplates();
@@ -382,7 +382,7 @@ public:
         return true;
     }
 
-	static bool HandleReloadCreatureTemplateAddonCommand(ChatHandler* handler)
+    static bool HandleReloadCreatureTemplateAddonCommand(ChatHandler* handler)
     {
         LOG_INFO("server.loading", "Loading Creature Template Addon... (`creature_template_addon`)");
         sObjectMgr->LoadCreatureTemplateAddons();
@@ -390,7 +390,7 @@ public:
         return true;
     }
 
-	static bool HandleReloadNpcTextCommand(ChatHandler* handler)
+    static bool HandleReloadNpcTextCommand(ChatHandler* handler)
     {
         LOG_INFO("server.loading", "Loading Npc Text... (`npc_text`)");
         sObjectMgr->LoadGossipText();
@@ -398,7 +398,7 @@ public:
         return true;
     }
 
-	static bool HandleReloadGameobjectTemplateCommand(ChatHandler* handler)
+    static bool HandleReloadGameobjectTemplateCommand(ChatHandler* handler)
     {
         LOG_INFO("server.loading", "Loading Gameobject Template... (`gameobject_template`)");
         sObjectMgr->LoadGameObjectTemplate();

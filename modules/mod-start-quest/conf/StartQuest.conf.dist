@@ -25,7 +25,7 @@ QuestStart.Enable = 0
 
 #
 #   QuestStart.QuestID - Id Задания
-#			Default = 0
+#            Default = 0
 #
 
 QuestStart.QuestID = 0

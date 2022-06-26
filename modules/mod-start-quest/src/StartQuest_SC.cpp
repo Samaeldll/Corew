@@ -12,17 +12,17 @@ public:
 
     void OnFirstLogin(Player* player)
     {
-		if (!MOD_CONF_GET_BOOL("QuestStart.Enable"))
+        if (!MOD_CONF_GET_BOOL("QuestStart.Enable"))
             return;
 
-		Quest const* quest = sObjectMgr->GetQuestTemplate(MOD_CONF_GET_INT("QuestStart.QuestID"));
-		if (quest)
+        Quest const* quest = sObjectMgr->GetQuestTemplate(MOD_CONF_GET_INT("QuestStart.QuestID"));
+        if (quest)
         {
-			if (player->CanAddQuest(quest, true))
-			{
-				player->AddQuest(quest, nullptr);
-			}
-		}
+            if (player->CanAddQuest(quest, true))
+            {
+                player->AddQuest(quest, nullptr);
+            }
+        }
     }
 };
 
@@ -40,6 +40,6 @@ public:
 
 void AddSC_StartQuest()
 {
-	new Quest_World();
-	new start_quest();
+    new Quest_World();
+    new start_quest();
 }
