@@ -326,7 +326,7 @@ public:
         HandleReloadPointsOfInterestCommand(handler);
         return true;
     }
-	
+
 	static bool HandleReloadAllCreatureCommand(ChatHandler* handler)
     {
         HandleReloadCreatureTemplateCommand(handler);
@@ -340,7 +340,7 @@ public:
         HandleReloadItemEnchantementsCommand(handler);
         return true;
     }
-	
+
 	static bool HandleReloadAllGameobjectCommand(ChatHandler* handler)
     {
 		HandleReloadGameobjectTemplateCommand(handler);
@@ -373,7 +373,7 @@ public:
         handler->SendGlobalGMSysMessage("World config settings reloaded.");
         return true;
     }
-	
+
 	static bool HandleReloadItemTemplateCommand(ChatHandler* handler)
     {
         LOG_INFO("server.loading", "Loading Item template... (`item_template`)");
@@ -381,7 +381,7 @@ public:
         handler->SendGlobalGMSysMessage("DB table `item_template` reloaded.");
         return true;
     }
-	
+
 	static bool HandleReloadCreatureTemplateAddonCommand(ChatHandler* handler)
     {
         LOG_INFO("server.loading", "Loading Creature Template Addon... (`creature_template_addon`)");
@@ -389,7 +389,7 @@ public:
         handler->SendGlobalGMSysMessage("DB table `creature_template_addon` reloaded.");
         return true;
     }
-	
+
 	static bool HandleReloadNpcTextCommand(ChatHandler* handler)
     {
         LOG_INFO("server.loading", "Loading Npc Text... (`npc_text`)");
@@ -397,7 +397,7 @@ public:
         handler->SendGlobalGMSysMessage("DB table `npc_text` reloaded.");
         return true;
     }
-	
+
 	static bool HandleReloadGameobjectTemplateCommand(ChatHandler* handler)
     {
         LOG_INFO("server.loading", "Loading Gameobject Template... (`gameobject_template`)");
@@ -413,7 +413,6 @@ public:
         handler->SendGlobalGMSysMessage("DB tables `dungeon_access_template` AND `dungeon_access_requirements` reloaded.");
         return true;
     }
-	
 
     static bool HandleReloadAchievementCriteriaDataCommand(ChatHandler* handler)
     {
@@ -539,7 +538,7 @@ public:
 
             sObjectMgr->LoadCreatureTemplate(fields);
             sObjectMgr->CheckCreatureTemplate(cInfo);
-        } Standard Method */ 
+        } Standard Method */
 
         LOG_INFO("server.loading", "Loading Creature template... (`creature_template`)");
         sObjectMgr->LoadCreatureTemplates();

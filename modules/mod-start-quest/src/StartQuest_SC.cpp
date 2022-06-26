@@ -14,7 +14,7 @@ public:
     {
 		if (!MOD_CONF_GET_BOOL("QuestStart.Enable"))
             return;
-		
+
 		Quest const* quest = sObjectMgr->GetQuestTemplate(MOD_CONF_GET_INT("QuestStart.QuestID"));
 		if (quest)
         {
@@ -22,10 +22,9 @@ public:
 			{
 				player->AddQuest(quest, nullptr);
 			}
-		}    
+		}
     }
 };
-
 
 class Quest_World : public WorldScript
 {
