@@ -32,7 +32,7 @@ using ChatSubCommandMap = std::map<std::string_view, Warhead::Impl::ChatCommands
 static ChatSubCommandMap COMMAND_MAP;
 
 void Warhead::Impl::ChatCommands::ChatCommandNode::LoadFromBuilder(ChatCommandBuilder const& builder)
-{
+	{
     if (std::holds_alternative<ChatCommandBuilder::InvokerEntry>(builder._data))
     {
         ASSERT(!_invoker, "Duplicate blank sub-command.");
@@ -192,10 +192,7 @@ void Warhead::Impl::ChatCommands::ChatCommandNode::SendCommandHelp(ChatHandler& 
     bool const hasInvoker = IsInvokerVisible(handler);
     if (hasInvoker)
     {
-       if (auto localizeHelp = sGameLocale->GetChatCommandStringHelpLocale(_name, LocaleConstant(handler.GetSessionDbLocaleIndex())))
-        {
-            handler.SendSysMessage(*localizeHelp);
-        }
+        if (auto localizeHelp = sGameLocale->GetChatCommandStringHelpLocale(_name, handler.GetSessionDbcLocale()))
         else if (!_help.empty())
         {
             handler.SendSysMessage(_help);
