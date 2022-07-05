@@ -192,7 +192,7 @@ void Warhead::Impl::ChatCommands::ChatCommandNode::SendCommandHelp(ChatHandler& 
     bool const hasInvoker = IsInvokerVisible(handler);
     if (hasInvoker)
     {
-       if (auto localizeHelp = sGameLocale->GetChatCommandStringHelpLocale(_name, LocaleConstant(handler.GetSessionDbLocaleIndex())))
+        if (auto localizeHelp = sGameLocale->GetChatCommandStringHelpLocale(_name, handler.GetSessionDbcLocale()))
         {
             handler.SendSysMessage(*localizeHelp);
         }
