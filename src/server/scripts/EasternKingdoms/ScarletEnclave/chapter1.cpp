@@ -194,6 +194,7 @@ enum deathsChallenge
     SAY_DUEL                    = 0,
 
     QUEST_DEATH_CHALLENGE       = 12733,
+    QUEST_DEATH_CHALLENGE_TWO   = 50004,
 
     DATA_IN_PROGRESS            = 0,
 
@@ -230,7 +231,9 @@ public:
 
     bool OnGossipHello(Player* player, Creature* creature) override
     {
-        if (player->GetQuestStatus(QUEST_DEATH_CHALLENGE) == QUEST_STATUS_INCOMPLETE && creature->IsFullHealth())
+        if (player->GetQuestStatus(QUEST_DEATH_CHALLENGE) == QUEST_STATUS_INCOMPLETE && creature->IsFullHealth() or
+			player->GetQuestStatus(QUEST_DEATH_CHALLENGE_TWO) == QUEST_STATUS_INCOMPLETE && creature->IsFullHealth()
+			)
         {
             if (player->HealthBelowPct(10))
                 return true;

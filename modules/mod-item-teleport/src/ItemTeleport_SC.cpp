@@ -10,18 +10,14 @@
 #include "ModuleLocale.h"
 
 #define EMOTE_COMBAT "|cffff0000Вы в бою! Чтобы использовать данный предмет, выйдите из боя!|r"
-#define EMOTE_TELEPORT "Телепортация выполнено успешно, приятной игры."
-#define EMOTE_QUESTIONSFIRST "Условия задания были выполнены, продолжайте ваш путь."
+#define EMOTE_TELEPORT "|cffF08080Телепортация выполнено успешно, приятной игры."
+#define EMOTE_QUESTIONSFIRST "|cffFFC0CBУсловия задания были выполнены, продолжайте ваш путь."
 
 enum  defines
 {
 	//quest
     ETHEREAL_CREDIT = 38186, // Эфириальная монета
-	InformationTake = 50000, //Первое задание - Информатор
-	MakeTeleport = 50001, //Второе задание - выполнить телепорт
 	
-	//npc
-	Information = 80014
 };
 
 class item_teleport : public ItemScript
@@ -45,8 +41,10 @@ public:
 		
 		else {
 			player->PlayerTalkClass->ClearMenus();
-			AddGossipItemFor(player, 10, "|TInterface\\icons\\:35:|tШатер Деревни", GOSSIP_SENDER_MAIN,                        	 	 							 1);
-			AddGossipItemFor(player, 10, "|TInterface\\icons\\:35:|tБашня Драконов", GOSSIP_SENDER_MAIN,               						 	 				 2);
+			AddGossipItemFor(player, 10, "Шатер Деревни", GOSSIP_SENDER_MAIN,                        	 	 							 1);
+			if (player->GetQuestStatus(50003) == QUEST_STATUS_REWARDED){
+			AddGossipItemFor(player, 10, "Башня Драконов", GOSSIP_SENDER_MAIN,               						 	 				 2);
+			}
 			SendGossipMenuFor(player, 68, item->GetGUID());
 		}
     }
@@ -66,18 +64,25 @@ public:
 			switch (action)
 			{
 				
-				case 999:
+				case 999: //Хук на создание меню
 					create_menu(player, item);
 				break;
 				
-				case 1:
+				case 1: //Шатер Деревни
 					Warhead::Text::SendAreaTriggerMessage(player->GetSession(), EMOTE_TELEPORT);
-					if (player->IsActiveQuest(MakeTeleport)){
+					if (player->GetQuestStatus(50001) == QUEST_STATUS_INCOMPLETE){
 					Warhead::Text::SendAreaTriggerMessage(player->GetSession(), EMOTE_QUESTIONSFIRST);
-					player->KilledMonsterCredit(Information);
+					player->KilledMonsterCredit(80016);
 					}
 					ClearGossipMenuFor(player);
-					player->TeleportTo(0, -13230.713867f, 223.944885f, 33.073017f, 1.110926f);
+					player->TeleportTo(37, 1064.7357f, 6.245868f, 314.92587f, 3.6755364f);
+					player->PlayerTalkClass->SendCloseGossip();
+				break;
+				
+				case 2: //Башня Драконов
+					Warhead::Text::SendAreaTriggerMessage(player->GetSession(), EMOTE_TELEPORT);
+					ClearGossipMenuFor(player);
+					player->TeleportTo(37, 881.2614f, 15.757152f, 348.14883f, 5.2447586f);
 					player->PlayerTalkClass->SendCloseGossip();
 				break;
 			}
@@ -95,25 +100,29 @@ public:
  
      bool OnGossipHello(Player* player, Creature* creature) override // Any hook here
     {
-        GossipHello(player, creature);
+        CreateMenu(player, creature);
         return false;
     }
   
-    void GossipHello(Player* player, Creature* creature)
+    void CreateMenu(Player* player, Creature* creature)
 	{
         if (player ->IsInCombat() || player ->IsInFlight() || player ->GetMap()->IsBattlegroundOrArena() || player ->HasStealthAura() || player ->HasFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_FEIGN_DEATH) || player ->isDead() || player ->GetAreaId() == 616)
         {
-            sModuleLocale->SendPlayerMessage(player, "IT_LOCALE_COMBAT");
+            Warhead::Text::SendAreaTriggerMessage(player->GetSession(), "Сейчас вы не можете выполнить данное действие");
             CloseGossipMenuFor(player);
         }
 		
 		else {
-			ClearGossipMenuFor(player);
-			AddGossipItemFor(player, 10, "Информация о Сервере", GOSSIP_SENDER_MAIN,                        	 	 							 1);
+			player->PlayerTalkClass->ClearMenus();
+			AddGossipItemFor(player, 10, "Информация о Проекте", 		GOSSIP_SENDER_MAIN,         1);
+			AddGossipItemFor(player, 10, "Информация о Игровом Мире", 	GOSSIP_SENDER_MAIN,    		2);
+			AddGossipItemFor(player, 10, "Как написать администрации?", GOSSIP_SENDER_MAIN,  		3);
+			AddGossipItemFor(player, 10, "Где скачать Лаунчер", 		GOSSIP_SENDER_MAIN,  		4);
 			if (player->IsActiveQuest(50000)){
-				AddGossipItemFor(player, 10, "Информация о Деревне", GOSSIP_SENDER_MAIN,               						 	 				 2);
+				AddGossipItemFor(player, 10, "Информация о Деревне", 	GOSSIP_SENDER_MAIN,     	20);
 			}
-			SendGossipMenuFor(player, 68, creature->GetGUID());
+			SendGossipMenuFor(player, 0, creature->GetGUID());
+			Warhead::Text::SendAreaTriggerMessage(player->GetSession(), "Тест1");
 		}
     }
     
@@ -123,11 +132,15 @@ public:
 		
         if (sender >= GOSSIP_SENDER_INFO)
         {
-            GossipHello(player, creature);
+			ClearGossipMenuFor(player);
             return false;
         }
 			switch (action)
 			{
+				case 0:
+				CreateMenu(player, creature);
+				break;
+				
 				case 1:
 				ClearGossipMenuFor(player);
 				player->KilledMonsterCredit(80015);
@@ -138,9 +151,13 @@ public:
 				ClearGossipMenuFor(player);
 				player->PlayerTalkClass->SendCloseGossip();
 				break;
+				
+				default:
+				Warhead::Text::SendAreaTriggerMessage(player->GetSession(), "Ошибка");
+				ClearGossipMenuFor(player);
+				player->PlayerTalkClass->SendCloseGossip();
+				break;
 			}
-		
-		return true;
 	}
 };
 
