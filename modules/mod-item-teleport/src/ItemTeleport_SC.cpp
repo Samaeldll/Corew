@@ -1,17 +1,19 @@
 #include "Player.h"
 #include "WorldSession.h"
+#include "Common.h"
 #include "ScriptMgr.h"
 #include "Log.h"
 #include "World.h"
 #include "ModulesConfig.h"
 #include "ScriptedGossip.h"
 #include "ChatTextBuilder.h"
-#include "Chat.h"
 #include "ModuleLocale.h"
+
 
 #define EMOTE_COMBAT "|cffff0000Вы в бою! Чтобы использовать данный предмет, выйдите из боя!|r"
 #define EMOTE_TELEPORT "|cffF08080Телепортация выполнено успешно, приятной игры."
 #define EMOTE_QUESTIONSFIRST "|cffFFC0CBУсловия задания были выполнены, продолжайте ваш путь."
+
 
 enum  defines
 {
@@ -41,11 +43,11 @@ public:
 		
 		else {
 			player->PlayerTalkClass->ClearMenus();
-			AddGossipItemFor(player, 10, "Шатер Деревни", GOSSIP_SENDER_MAIN,                        	 	 							 1);
+			AddGossipItemFor(player, 10, "Шатер Деревни", GOSSIP_SENDER_MAIN,      1);
 			if (player->GetQuestStatus(50003) == QUEST_STATUS_REWARDED){
-			AddGossipItemFor(player, 10, "Башня Драконов", GOSSIP_SENDER_MAIN,               						 	 				 2);
+			AddGossipItemFor(player, 10, "Башня Драконов", GOSSIP_SENDER_MAIN,     2);
 			}
-			SendGossipMenuFor(player, 68, item->GetGUID());
+			SendGossipMenuFor(player, 1, item->GetGUID());
 		}
     }
     
@@ -98,66 +100,62 @@ class npc_information : public CreatureScript
 public:
     npc_information() : CreatureScript("npc_information") { }
  
-     bool OnGossipHello(Player* player, Creature* creature) override // Any hook here
+    bool OnGossipHello(Player* player, Creature* creature) override // Any hook here
     {
         CreateMenu(player, creature);
-        return false;
+        return true;
     }
-  
+	
     void CreateMenu(Player* player, Creature* creature)
 	{
-        if (player ->IsInCombat() || player ->IsInFlight() || player ->GetMap()->IsBattlegroundOrArena() || player ->HasStealthAura() || player ->HasFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_FEIGN_DEATH) || player ->isDead() || player ->GetAreaId() == 616)
+        if (player->IsInCombat() || player->IsInFlight() || player->GetMap()->IsBattlegroundOrArena() || player->HasStealthAura() || player->HasFlag(UNIT_FIELD_FLAGS_2, UNIT_FLAG2_FEIGN_DEATH) || player->isDead() || player->GetAreaId() == 616)
         {
             Warhead::Text::SendAreaTriggerMessage(player->GetSession(), "Сейчас вы не можете выполнить данное действие");
             CloseGossipMenuFor(player);
         }
 		
-		else {
+		else {	
 			player->PlayerTalkClass->ClearMenus();
-			AddGossipItemFor(player, 10, "Информация о Проекте", 		GOSSIP_SENDER_MAIN,         1);
-			AddGossipItemFor(player, 10, "Информация о Игровом Мире", 	GOSSIP_SENDER_MAIN,    		2);
-			AddGossipItemFor(player, 10, "Как написать администрации?", GOSSIP_SENDER_MAIN,  		3);
-			AddGossipItemFor(player, 10, "Где скачать Лаунчер", 		GOSSIP_SENDER_MAIN,  		4);
-			if (player->IsActiveQuest(50000)){
-				AddGossipItemFor(player, 10, "Информация о Деревне", 	GOSSIP_SENDER_MAIN,     	20);
+			AddGossipItemFor(player, 10, "Информация о Проекте", 			GOSSIP_SENDER_MAIN,     1);
+			AddGossipItemFor(player, 10, "Информация о Игровом Мире", 		GOSSIP_SENDER_MAIN,    	2);
+			AddGossipItemFor(player, 10, "Как написать администрации?",  	GOSSIP_SENDER_MAIN,  	3);
+			AddGossipItemFor(player, 10, "Где скачать Лаунчер", 			GOSSIP_SENDER_MAIN,  	4);
+			if (player->IsActiveQuest(50000)){                                                                                
+				AddGossipItemFor(player, 10, "Информация о Деревне", 		GOSSIP_SENDER_MAIN,     20);
 			}
-			SendGossipMenuFor(player, 0, creature->GetGUID());
-			Warhead::Text::SendAreaTriggerMessage(player->GetSession(), "Тест1");
+			SendGossipMenuFor(player, 100500, creature->GetGUID());
 		}
     }
     
     bool OnGossipSelect(Player* player, Creature* creature, uint32 sender, uint32 action) override
     {
-		ClearGossipMenuFor(player);
-		
-        if (sender >= GOSSIP_SENDER_INFO)
-        {
-			ClearGossipMenuFor(player);
-            return false;
+        if (!player)
+            return true;
+
+        ClearGossipMenuFor(player);
+                
+        switch (sender) {
+            case GOSSIP_SENDER_MAIN: {        
+                switch (action)
+                {	
+                    case 1:
+                        AddGossipItemFor(player, GOSSIP_ICON_MONEY_BAG, "Вернутся назад", 	GOSSIP_SENDER_MAIN, 999);
+                        SendGossipMenuFor(player, 80006, creature->GetGUID());
+						if (player->GetQuestStatus(50000) == QUEST_STATUS_INCOMPLETE){                                                                                
+						player->KilledMonsterCredit(80015);
+						Warhead::Text::SendAreaTriggerMessage(player->GetSession(), EMOTE_QUESTIONSFIRST);
+						}
+                    break;
+                    case 2: CloseGossipMenuFor(player); break;
+
+                    case 999:
+                    default: CreateMenu(player, creature); break;
+                }
+            } break;
+            default: break;
         }
-			switch (action)
-			{
-				case 0:
-				CreateMenu(player, creature);
-				break;
-				
-				case 1:
-				ClearGossipMenuFor(player);
-				player->KilledMonsterCredit(80015);
-				player->PlayerTalkClass->SendCloseGossip();
-				break;
-				
-				case 2:
-				ClearGossipMenuFor(player);
-				player->PlayerTalkClass->SendCloseGossip();
-				break;
-				
-				default:
-				Warhead::Text::SendAreaTriggerMessage(player->GetSession(), "Ошибка");
-				ClearGossipMenuFor(player);
-				player->PlayerTalkClass->SendCloseGossip();
-				break;
-			}
+
+        return true;
 	}
 };
 
