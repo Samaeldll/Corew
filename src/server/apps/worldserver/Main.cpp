@@ -43,12 +43,14 @@
 #include "Resolver.h"
 #include "ScriptLoader.h"
 #include "ScriptMgr.h"
+#include "ScriptReloadMgr.h"
 #include "SecretMgr.h"
 #include "SharedDefines.h"
 #include "World.h"
 #include "WorldSocket.h"
 #include "WorldSocketMgr.h"
 #include <boost/asio/signal_set.hpp>
+#include <boost/dll/runtime_symbol_info.hpp>
 #include <boost/program_options.hpp>
 #include <csignal>
 #include <filesystem>
@@ -59,8 +61,8 @@
 #if WARHEAD_PLATFORM == WARHEAD_PLATFORM_WINDOWS
 #include "ServiceWin32.h"
 #include <boost/dll/shared_library.hpp>
-#include <timeapi.h>
 #include <fmt/core.h>
+#include <timeapi.h>
 
 char serviceName[] = "worldserver";
 char serviceLongName[] = "WarheadCore world service";
@@ -198,13 +200,13 @@ int main(int argc, char** argv)
         []()
         {
             LOG_INFO("server.worldserver", "> Using configuration file:       {}", sConfigMgr->GetFilename());
-            LOG_INFO("server.worldserver", "> Using SSL version:              {} (library: {})", OPENSSL_VERSION_TEXT, SSLeay_version(SSLEAY_VERSION));
+            LOG_INFO("server.worldserver", "> Using SSL version:              {} (library: {})", OPENSSL_VERSION_TEXT, OpenSSL_version(OPENSSL_VERSION));
             LOG_INFO("server.worldserver", "> Using Boost version:            {}.{}.{}", BOOST_VERSION / 100000, BOOST_VERSION / 100 % 1000, BOOST_VERSION % 100);
-            LOG_INFO("server.worldserver", "> Using logs directory:           '{}'", sLog->GetLogsDir());
+            LOG_INFO("server.worldserver", "> Using logs directory:           {}", sLog->GetLogsDir());
         }
     );
 
-    OpenSSLCrypto::threadsSetup();
+    OpenSSLCrypto::threadsSetup(boost::dll::program_location().remove_filename().generic_string());
 
     std::shared_ptr<void> opensslHandle(nullptr, [](void*) { OpenSSLCrypto::threadsCleanup(); });
 
@@ -266,7 +268,7 @@ int main(int argc, char** argv)
     std::shared_ptr<void> sScriptMgrHandle(nullptr, [](void*)
     {
         sScriptMgr->Unload();
-        //sScriptReloadMgr->Unload();
+        sScriptReloadMgr->Unload();
     });
 
     LOG_INFO("server.loading", "Initializing Scripts...");
@@ -402,6 +404,12 @@ int main(int argc, char** argv)
         thr->join();
         delete thr;
     });
+
+    if (sConfigMgr->isDryRun())
+    {
+        LOG_INFO("server.loading", "Dry run completed, terminating.");
+        World::StopNow(SHUTDOWN_EXIT_CODE);
+    }
 
     WorldUpdateLoop();
 

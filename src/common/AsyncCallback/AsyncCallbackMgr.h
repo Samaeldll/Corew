@@ -45,23 +45,23 @@ namespace Warhead::Async
         AsyncCallback& operator=(AsyncCallback const& right) = delete;
     };
 
-    class AsyncCallbackMgr
+    class WH_COMMON_API AsyncCallbackMgr
     {
     public:
-        AsyncCallbackMgr() = default;
-        ~AsyncCallbackMgr() = default;
-
         static AsyncCallbackMgr* instance();
 
         void AddAsyncCallback(std::function<void()>&& execute, Microseconds delay = 0us);
-
         void ProcessReadyCallbacks();
 
     private:
-        AsyncCallbackProcessor<AsyncCallback> _asyncCallbacks;
+        AsyncCallbackMgr() = default;
+        ~AsyncCallbackMgr() = default;
+        AsyncCallbackMgr(AsyncCallbackMgr const&) = delete;
+        AsyncCallbackMgr(AsyncCallbackMgr&&) = delete;
+        AsyncCallbackMgr& operator=(AsyncCallbackMgr const&) = delete;
+        AsyncCallbackMgr& operator=(AsyncCallbackMgr&&) = delete;
 
-        AsyncCallbackMgr(AsyncCallbackMgr const& right) = delete;
-        AsyncCallbackMgr& operator=(AsyncCallbackMgr const& right) = delete;
+        AsyncCallbackProcessor<AsyncCallback> _asyncCallbacks;
     };
 }
 

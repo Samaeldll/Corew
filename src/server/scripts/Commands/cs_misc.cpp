@@ -32,6 +32,7 @@
 #include "IPLocation.h"
 #include "InstanceSaveMgr.h"
 #include "LFG.h"
+#include "LFGMgr.h"
 #include "Language.h"
 #include "MapMgr.h"
 #include "MiscPackets.h"
@@ -43,6 +44,7 @@
 #include "Player.h"
 #include "Realm.h"
 #include "ScriptMgr.h"
+#include "ScriptObject.h"
 #include "SpellAuras.h"
 #include "TargetedMovementGenerator.h"
 #include "Timer.h"
@@ -1652,7 +1654,7 @@ public:
 
             // output successful amount of destroyed items
             playerTarget->DestroyItemCount(itemId, -count, true, false);
-            handler->PSendSysMessage(LANG_REMOVEITEM, itemId, -count, handler->GetNameLink(playerTarget).c_str());
+            handler->PSendSysMessage(LANG_REMOVEITEM, itemId, -count, handler->GetNameLink(playerTarget));
             return true;
         }
 

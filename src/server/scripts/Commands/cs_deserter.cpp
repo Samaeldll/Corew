@@ -25,7 +25,7 @@
 #include "Chat.h"
 #include "Language.h"
 #include "Player.h"
-#include "ScriptMgr.h"
+#include "ScriptObject.h"
 #include "SpellAuras.h"
 #include "Timer.h"
 
@@ -388,11 +388,11 @@ public:
 
         if (deserterCount == 0)
         {
-            handler->PSendSysMessage("No player on this realm has %s Deserter with a duration of %s or less.", isInstance ? "Instance" : "Battleground", remainTimeStr);
+            handler->PSendSysMessage("No player on this realm has {} Deserter with a duration of {} or less.", isInstance ? "Instance" : "Battleground", remainTimeStr);
             return true;
         }
 
-        handler->PSendSysMessage("%s Deserter has been removed from %u player(s) with a duration of %s or less.", isInstance ? "Instance" : "Battleground", deserterCount, remainTimeStr);
+        handler->PSendSysMessage("{} Deserter has been removed from {} player(s) with a duration of {} or less.", isInstance ? "Instance" : "Battleground", deserterCount, remainTimeStr);
         return true;
     }
 

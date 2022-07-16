@@ -23,14 +23,15 @@
 class CreatureAI;
 class Creature;
 class MovementGenerator;
+class Unit;
 class GameObjectAI;
 class GameObject;
 
 namespace FactorySelector
 {
-    WH_GAME_API CreatureAI* selectAI(Creature*);
-    WH_GAME_API MovementGenerator* selectMovementGenerator(Creature*);
-    WH_GAME_API GameObjectAI* SelectGameObjectAI(GameObject*);
+    WH_GAME_API CreatureAI* SelectAI(Creature* creature);
+    WH_GAME_API MovementGenerator* SelectMovementGenerator(Unit* unit);
+    WH_GAME_API GameObjectAI* SelectGameObjectAI(GameObject* go);
 }
 
 #endif

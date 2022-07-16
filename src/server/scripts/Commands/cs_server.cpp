@@ -32,7 +32,7 @@
 #include "MySQLThreading.h"
 #include "Player.h"
 #include "Realm.h"
-#include "ScriptMgr.h"
+#include "ScriptObject.h"
 #include "ServerMotd.h"
 #include "StringConvert.h"
 #include "Timer.h"
@@ -131,7 +131,7 @@ public:
         }
 
         handler->PSendSysMessage("{}", GitRevision::GetFullVersion());
-        handler->PSendSysMessage("Using SSL version: {} (library: {})", OPENSSL_VERSION_TEXT, SSLeay_version(SSLEAY_VERSION));
+        handler->PSendSysMessage("Using SSL version: {} (library: {})", OPENSSL_VERSION_TEXT, OpenSSL_version(OPENSSL_VERSION));
         handler->PSendSysMessage("Using Boost version: {}.{}.{}", BOOST_VERSION / 100000, BOOST_VERSION / 100 % 1000, BOOST_VERSION % 100);
         handler->PSendSysMessage("Using MySQL version: {}", MySQL::GetLibraryVersion());
         handler->PSendSysMessage("Using CMake version: {}", GitRevision::GetCMakeVersion());

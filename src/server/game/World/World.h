@@ -92,13 +92,13 @@ struct GlobalPlayerData
     std::map<uint8, uint32> arenaTeamId;
 };
 
-enum ShutdownMask
+enum ShutdownMask : uint8
 {
     SHUTDOWN_MASK_RESTART = 1,
     SHUTDOWN_MASK_IDLE    = 2,
 };
 
-enum ShutdownExitCode
+enum ShutdownExitCode : uint8
 {
     SHUTDOWN_EXIT_CODE = 0,
     ERROR_EXIT_CODE    = 1,
@@ -118,6 +118,7 @@ enum WorldTimers
     WUPDATE_PINGDB,
     WUPDATE_5_SECS,
     WUPDATE_WHO_LIST,
+    WUPDATE_CHECK_FILECHANGES,
     WUPDATE_COUNT
 };
 
@@ -189,18 +190,10 @@ enum WorldStates
     WS_DAILY_CALENDAR_DELETION_OLD_EVENTS_TIME = 20008                      // Next daily calendar deletions of old events time
 };
 
-// xinef: petitions storage
-struct PetitionData
-{
-};
-
 /// The World
 class WH_GAME_API World
 {
 public:
-    World();
-    ~World();
-
     static World* instance();
 
     static uint32 m_worldLoopCounter;
@@ -443,6 +436,13 @@ private:
      * @param session The World Session that we are finalizing.
      */
     inline void FinalizePlayerWorldSession(WorldSession* session);
+
+    World();
+    ~World();
+    World(World const&) = delete;
+    World(World&&) = delete;
+    World& operator=(World const&) = delete;
+    World& operator=(World&&) = delete;
 };
 
 WH_GAME_API extern Realm realm;

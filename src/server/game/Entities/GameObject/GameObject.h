@@ -994,7 +994,7 @@ public:
     [[nodiscard]] virtual uint32 GetScriptId() const;
     [[nodiscard]] GameObjectAI* AI() const { return m_AI; }
 
-    [[nodiscard]] std::string GetAIName() const;
+    [[nodiscard]] std::string const& GetAIName() const;
     void SetDisplayId(uint32 displayid);
     [[nodiscard]] uint32 GetDisplayId() const { return GetUInt32Value(GAMEOBJECT_DISPLAYID); }
 
@@ -1054,8 +1054,11 @@ public:
     void UpdateSaveToDb(bool enable);
 
     void SavingStateOnDB();
-protected:
+
+    void AIM_Destroy();
     bool AIM_Initialize();
+
+protected:
     GameObjectModel* CreateModel();
     void UpdateModel();                                 // updates model in case displayId were changed
     uint32      m_spellId;

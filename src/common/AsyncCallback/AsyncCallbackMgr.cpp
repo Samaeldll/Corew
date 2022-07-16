@@ -18,18 +18,18 @@
 #include "AsyncCallbackMgr.h"
 #include "Duration.h"
 
+/*static*/ Warhead::Async::AsyncCallbackMgr* Warhead::Async::AsyncCallbackMgr::instance()
+{
+    static AsyncCallbackMgr instance;
+    return &instance;
+}
+
 bool Warhead::Async::AsyncCallback::InvokeIfReady()
 {
     if (_future.valid() && _future.wait_for(0s) == std::future_status::ready)
         return true;
 
     return false;
-}
-
-/*static*/ Warhead::Async::AsyncCallbackMgr* Warhead::Async::AsyncCallbackMgr::instance()
-{
-    static AsyncCallbackMgr instance;
-    return &instance;
 }
 
 void Warhead::Async::AsyncCallbackMgr::AddAsyncCallback(std::function<void()>&& execute, Microseconds delay /*= 0us*/)

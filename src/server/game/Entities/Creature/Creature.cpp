@@ -286,6 +286,8 @@ void Creature::AddToWorld()
             GetZoneScript()->OnCreatureCreate(this);
         }
 
+        loot.sourceWorldObjectGUID = GetGUID();
+
         sScriptMgr->OnCreatureAddWorld(this);
     }
 }
@@ -1006,7 +1008,24 @@ void Creature::DoFleeToGetAssistance()
     }
 }
 
-bool Creature::AIM_Initialize(CreatureAI* ai)
+bool Creature::AIM_Destroy()
+{
+    if (m_AI_locked)
+    {
+        LOG_DEBUG("scripts", "AIM_Destroy: failed to destroy, locked.");
+        return false;
+    }
+
+    ASSERT(!i_disabledAI, "The disabled AI wasn't cleared!");
+
+    delete i_AI;
+    i_AI = nullptr;
+
+    IsAIEnabled = false;
+    return true;
+}
+
+bool Creature::AIM_Create(CreatureAI* ai /*= nullptr*/)
 {
     // make sure nothing can change the AI during AI update
     if (m_AI_locked)
@@ -1015,19 +1034,28 @@ bool Creature::AIM_Initialize(CreatureAI* ai)
         return false;
     }
 
-    UnitAI* oldAI = i_AI;
+    AIM_Destroy();
 
-    // Xinef: called in add to world
-    //Motion_Initialize();
+    i_AI = ai ? ai : FactorySelector::SelectAI(this);
+    return true;
+}
 
-    i_AI = ai ? ai : FactorySelector::selectAI(this);
-    delete oldAI;
+void Creature::AI_InitializeAndEnable()
+{
     IsAIEnabled = true;
     i_AI->InitializeAI();
 
     // Xinef: Initialize vehicle if it is not summoned!
     if (GetVehicleKit() && m_spawnId)
         GetVehicleKit()->Reset();
+}
+
+bool Creature::AIM_Initialize(CreatureAI* ai)
+{
+    if (!AIM_Create(ai))
+        return false;
+
+    AI_InitializeAndEnable();
     return true;
 }
 
@@ -2860,7 +2888,7 @@ uint8 Creature::getLevelForTarget(WorldObject const* target) const
     return uint8(level);
 }
 
-std::string Creature::GetAIName() const
+std::string const& Creature::GetAIName() const
 {
     return sObjectMgr->GetCreatureTemplate(GetEntry())->AIName;
 }
@@ -3439,7 +3467,7 @@ bool Creature::IsMovementPreventedByCasting() const
 {
     Spell* spell = m_currentSpells[CURRENT_CHANNELED_SPELL];
     // first check if currently a movement allowed channel is active and we're not casting
-    if (spell && spell->getState() != SPELL_STATE_FINISHED && spell->IsChannelActive() && spell->GetSpellInfo()->IsMoveAllowedChannel())
+    if (spell && spell->getState() != SPELL_STATE_FINISHED && spell->IsChannelActive() && spell->GetSpellInfo()->IsActionAllowedChannel())
     {
         return false;
     }

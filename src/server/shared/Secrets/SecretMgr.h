@@ -35,14 +35,7 @@ enum Secrets : uint32
 
 class WH_SHARED_API SecretMgr
 {
-private:
-    SecretMgr() = default;
-    ~SecretMgr() = default;
-
 public:
-    SecretMgr(SecretMgr const&) = delete;
-    static SecretMgr* instance();
-
     struct Secret
     {
         public:
@@ -59,6 +52,8 @@ public:
         friend class SecretMgr;
     };
 
+    static SecretMgr* instance();
+
     void Initialize();
     Secret const& GetSecret(Secrets i);
 
@@ -67,6 +62,13 @@ private:
     [[nodiscard]] Optional<std::string> AttemptTransition(Secrets i, Optional<BigNumber> const& newSecret, Optional<BigNumber> const& oldSecret, bool hadOldSecret) const;
 
     std::array<Secret, NUM_SECRETS> _secrets;
+
+    SecretMgr() = default;
+    ~SecretMgr() = default;
+    SecretMgr(SecretMgr const&) = delete;
+    SecretMgr(SecretMgr&&) = delete;
+    SecretMgr& operator=(SecretMgr const&) = delete;
+    SecretMgr& operator=(SecretMgr&&) = delete;
 };
 
 #define sSecretMgr SecretMgr::instance()

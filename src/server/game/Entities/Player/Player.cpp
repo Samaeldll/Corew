@@ -818,7 +818,7 @@ int32 Player::getMaxTimer(MirrorTimerType timer)
             {
                 if (!IsAlive() || HasAuraType(SPELL_AURA_WATER_BREATHING) || GetSession()->GetSecurity() >= AccountTypes(CONF_GET_INT("DisableWaterBreath")))
                     return DISABLED_MIRROR_TIMER;
-                int32 UnderWaterTime = 3 * MINUTE * IN_MILLISECONDS;
+                int32 UnderWaterTime = CONF_GET_INT("WaterBreath.Timer");
                 AuraEffectList const& mModWaterBreathing = GetAuraEffectsByType(SPELL_AURA_MOD_WATER_BREATHING);
                 for (AuraEffectList::const_iterator i = mModWaterBreathing.begin(); i != mModWaterBreathing.end(); ++i)
                     AddPct(UnderWaterTime, (*i)->GetAmount());
@@ -4975,7 +4975,10 @@ float Player::GetTotalBaseModValue(BaseModGroup modGroup) const
 
 uint32 Player::GetShieldBlockValue() const
 {
-    float value = (m_auraBaseMod[SHIELD_BLOCK_VALUE][FLAT_MOD] + GetStat(STAT_STRENGTH) * 0.5f - 10) * m_auraBaseMod[SHIELD_BLOCK_VALUE][PCT_MOD];
+    float blockFromStrenght = GetStat(STAT_STRENGTH) * 0.5f;
+    sScriptMgr->OnGetShieldBlockValue(const_cast<Player*>(this), blockFromStrenght);
+
+    float value = (m_auraBaseMod[SHIELD_BLOCK_VALUE][FLAT_MOD] + blockFromStrenght - 10) * m_auraBaseMod[SHIELD_BLOCK_VALUE][PCT_MOD];
 
     value = (value < 0) ? 0 : value;
 
@@ -4995,8 +4998,9 @@ float Player::GetMeleeCritFromAgility()
     if (!critBase || !critRatio)
         return 0.0f;
 
-    float crit = critBase->base + GetStat(STAT_AGILITY) * critRatio->ratio;
-    return crit * 100.0f;
+    float crit = (critBase->base + GetStat(STAT_AGILITY) * critRatio->ratio) * 100.0f;
+    sScriptMgr->OnGetMeleeCritFromAgility(this, crit);
+    return crit;
 }
 
 void Player::GetDodgeFromAgility(float& diminishing, float& nondiminishing)
@@ -5050,6 +5054,8 @@ void Player::GetDodgeFromAgility(float& diminishing, float& nondiminishing)
     // calculate diminishing (green in char screen) and non-diminishing (white) contribution
     diminishing = 100.0f * bonus_agility * dodgeRatio->ratio * crit_to_dodge[pclass - 1];
     nondiminishing = 100.0f * (dodge_base[pclass - 1] + base_agility * dodgeRatio->ratio * crit_to_dodge[pclass - 1]);
+
+    sScriptMgr->OnGetDodgeFromAgility(this, diminishing, nondiminishing);
 }
 
 float Player::GetSpellCritFromIntellect()
@@ -5065,8 +5071,9 @@ float Player::GetSpellCritFromIntellect()
     if (!critBase || !critRatio)
         return 0.0f;
 
-    float crit = critBase->base + GetStat(STAT_INTELLECT) * critRatio->ratio;
-    return crit * 100.0f;
+    float crit = (critBase->base + GetStat(STAT_INTELLECT) * critRatio->ratio) * 100.0f;
+    sScriptMgr->OnGetSpellCritFromIntellect(this, crit);
+    return crit;
 }
 
 float Player::GetRatingMultiplier(CombatRating cr) const
@@ -12839,11 +12846,6 @@ void Player::SetViewpoint(WorldObject* target, bool apply)
     {
         LOG_DEBUG("maps", "Player::CreateViewpoint: Player {} create seer {} (TypeId: {}).", GetName(), target->GetEntry(), target->GetTypeId());
 
-        if (!IsInWorld() || IsDuringRemoveFromWorld())
-            return;
-
-        LOG_DEBUG("maps", "Player::CreateViewpoint: Player {} create seer {} (TypeId: {}).", GetName(), target->GetEntry(), target->GetTypeId());
-
         if (!AddGuidValue(PLAYER_FARSIGHT, target->GetGUID()))
         {
             LOG_DEBUG("entities.player", "Player::CreateViewpoint: Player {} cannot add new viewpoint!", GetName());
@@ -13203,7 +13205,7 @@ void Player::StoreLootItem(uint8 lootSlot, Loot* loot)
             return;
         }
 
-    if (!item->AllowedForPlayer(this))
+    if (!item->AllowedForPlayer(this, loot->sourceWorldObjectGUID))
     {
         SendLootRelease(GetLootGUID());
         return;

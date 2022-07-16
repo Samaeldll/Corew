@@ -30,6 +30,7 @@
 #include "GossipDef.h"
 #include "GridNotifiersImpl.h"
 #include "InstanceScript.h"
+#include "LFGMgr.h"
 #include "Language.h"
 #include "Log.h"
 #include "M2Stores.h"
@@ -37,6 +38,7 @@
 #include "ObjectMgr.h"
 #include "PoolMgr.h"
 #include "ScriptMgr.h"
+#include "ScriptObject.h"
 #include "SpellMgr.h"
 #include "Transport.h"
 #include "Warden.h"
@@ -58,7 +60,8 @@ public:
             { "cinematic",      HandleDebugPlayCinematicCommand,       SEC_ADMINISTRATOR, Console::No },
             { "movie",          HandleDebugPlayMovieCommand,           SEC_ADMINISTRATOR, Console::No },
             { "sound",          HandleDebugPlaySoundCommand,           SEC_ADMINISTRATOR, Console::No },
-            { "music",          HandleDebugPlayMusicCommand,           SEC_ADMINISTRATOR, Console::No }
+            { "music",          HandleDebugPlayMusicCommand,           SEC_ADMINISTRATOR, Console::No },
+            { "visual",         HandleDebugVisualCommand,              SEC_ADMINISTRATOR, Console::No }
         };
         static ChatCommandTable debugSendCommandTable =
         {
@@ -200,6 +203,28 @@ public:
         player->PlayDirectMusic(musicId, player);
 
         handler->PSendSysMessage(LANG_YOU_HEAR_SOUND, musicId);
+        return true;
+    }
+
+    static bool HandleDebugVisualCommand(ChatHandler* handler, uint32 visualId)
+    {
+        if (!visualId)
+        {
+            handler->SendSysMessage(LANG_BAD_VALUE);
+            handler->SetSentErrorMessage(true);
+            return false;
+        }
+
+        Player* player = handler->GetPlayer();
+        Unit* target = handler->getSelectedUnit();
+
+        if (!target)
+        {
+            player->SendPlaySpellVisual(visualId);
+            return true;
+        }
+
+        player->SendPlaySpellImpact(target->GetGUID(), visualId);
         return true;
     }
 

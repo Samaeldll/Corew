@@ -125,6 +125,9 @@ public:
     [[nodiscard]] bool IsInEvadeMode() const { return HasUnitState(UNIT_STATE_EVADE); }
     [[nodiscard]] bool IsEvadingAttacks() const { return IsInEvadeMode() || CanNotReachTarget(); }
 
+    bool AIM_Destroy();
+    bool AIM_Create(CreatureAI* ai = nullptr);
+    void AI_InitializeAndEnable();
     bool AIM_Initialize(CreatureAI* ai = nullptr);
     void Motion_Initialize();
 
@@ -195,7 +198,7 @@ public:
     void SetDetectionDistance(float dist){ m_detectionDistance = dist; }
     [[nodiscard]] CreatureAddon const* GetCreatureAddon() const;
 
-    [[nodiscard]] std::string GetAIName() const;
+    [[nodiscard]] std::string const& GetAIName() const;
     [[nodiscard]] std::string GetScriptName() const;
     [[nodiscard]] uint32 GetScriptId() const;
 
