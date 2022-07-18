@@ -16,8 +16,12 @@
  */
 
 #include "StringFormat.h"
-#include <Poco/String.h>
+#include "Log.h"
+#include <Warhead/RegularExpression.h>
+#include <Warhead/RegularExpressionException.h>
 #include <locale>
+
+constexpr char CHAR_WHITESPACE = ' ';
 
 template<class Str>
 WH_COMMON_API Str Warhead::String::Trim(const Str& s, const std::locale& loc /*= std::locale()*/)
@@ -50,34 +54,35 @@ WH_COMMON_API Str Warhead::String::Trim(const Str& s, const std::locale& loc /*=
     return s;
 }
 
-std::string Warhead::String::TrimLeft(std::string& str)
+std::string_view Warhead::String::TrimLeft(std::string_view str)
 {
-    return Poco::trimLeft(str);
+    while (!str.empty() && (str.front() == CHAR_WHITESPACE))
+        str.remove_prefix(1);
+
+    return str;
 }
 
-std::string Warhead::String::TrimLeftInPlace(std::string& str)
+std::string_view Warhead::String::TrimRight(std::string_view str)
 {
-    return Poco::trimLeftInPlace(str);
+    while (!str.empty() && (str.back() == CHAR_WHITESPACE))
+        str.remove_suffix(1);
+
+    return str;
 }
 
-std::string Warhead::String::TrimRight(std::string& str)
+uint32 Warhead::String::PatternReplace(std::string& subject, std::string_view pattern, std::string_view replacement)
 {
-    return Poco::trimRight(str);
-}
+    try
+    {
+        RegularExpression re(pattern, RegularExpression::RE_MULTILINE);
+        return re.subst(subject, replacement, RegularExpression::RE_GLOBAL);
+    }
+    catch (const RegularExpressionException& e)
+    {
+        LOG_FATAL("util", "> Warhead::String::PatternReplace: {}", e.GetErrorMessage());
+    }
 
-std::string Warhead::String::TrimRightInPlace(std::string& str)
-{
-    return Poco::trimRightInPlace(str);
-}
-
-std::string Warhead::String::Replace(std::string& str, std::string const& from, std::string const& to)
-{
-    return Poco::replace(str, from, to);
-}
-
-std::string Warhead::String::ReplaceInPlace(std::string& str, std::string const& from, std::string const& to)
-{
-    return Poco::replaceInPlace(str, from, to);
+    return 0;
 }
 
 // Template Trim
