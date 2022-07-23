@@ -2,13 +2,13 @@
  * This file is part of the WarheadCore Project. See AUTHORS file for Copyright information
  *
  * This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the
- * Free Software Foundation; either version 2 of the License, or (at your
+ * under the terms of the GNU Affero General Public License as published by the
+ * Free Software Foundation; either version 3 of the License, or (at your
  * option) any later version.
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for
  * more details.
  *
  * You should have received a copy of the GNU General Public License along
@@ -75,7 +75,7 @@ public:
     inline void LoadConfig()
     {
         _IsEnable = MOD_CONF_GET_BOOL("IPSShop.Enable");
-        _discordShannelID = sModulesConfig->GetOption<int64>("IPSShop.Discord.ChannelID", 0);
+        //_discordShannelID = sModulesConfig->GetOption<int64>("IPSShop.Discord.ChannelID", 0);
     }
 
     inline void Initialize()
@@ -309,7 +309,7 @@ private:
         DiscordEmbedFields fields;
         fields.emplace_back(EmbedField("Предмет", embedItemName, true));
         fields.emplace_back(EmbedField("Количество", embedItemItemCount, true));
-        sDiscord->SendEmbedMessage(_discordShannelID, color, title, description, &fields);
+        //sDiscord->SendEmbedMessage(_discordShannelID, color, title, description, &fields);
     }
 
     inline void SendNotification(std::string_view playerName, std::string_view desc)
@@ -323,7 +323,7 @@ private:
 
         DiscordEmbedFields fields;
         fields.emplace_back(EmbedField("Услуга", std::string(desc), true));
-        sDiscord->SendEmbedMessage(_discordShannelID, color, title, description, &fields);
+        //sDiscord->SendEmbedMessage(_discordShannelID, color, title, description, &fields);
     }
 
 private:

@@ -2,13 +2,13 @@
  * This file is part of the WarheadCore Project. See AUTHORS file for Copyright information
  *
  * This program is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the
- * Free Software Foundation; either version 2 of the License, or (at your
+ * under the terms of the GNU Affero General Public License as published by the
+ * Free Software Foundation; either version 3 of the License, or (at your
  * option) any later version.
  *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public License for
  * more details.
  *
  * You should have received a copy of the GNU General Public License along
@@ -46,7 +46,7 @@ public:
     }
 
     // Config load
-    void LoadConfig()
+    inline void LoadConfig()
     {
         _IsEnable = MOD_CONF_GET_BOOL("IB.Enable");
 
@@ -89,8 +89,11 @@ public:
     }
 
     // Manage system
-    void ApplyBuffs(Player* player)
+    inline void ApplyBuffs(Player* player)
     {
+        if (!_IsEnable)
+            return;
+
         ClearBuffs(player, true);
 
         uint8 diff = player->GetMap()->GetDifficulty();
@@ -135,8 +138,11 @@ public:
             ApplyBuffForPlayer(player, diff, isRaid);
     }
 
-    void ClearBuffs(Player* player, bool checkGroup)
+    inline void ClearBuffs(Player* player, bool checkGroup)
     {
+        if (!_IsEnable)
+            return;
+
         Group* group = player->GetGroup();
 
         if (group && checkGroup)
@@ -165,17 +171,17 @@ private:
     std::unordered_map<ObjectGuid/*owner guid*/, std::pair<ObjectGuid/*pet guid*/, uint32 /*spellID*/>> _petsBuffedStore;
     std::unordered_map<InstanceDiff, std::vector<std::pair<uint32 /*playerCount*/, uint32 /*spellID*/>>> _buffStore;
 
-    bool IsPlayerBuffed(Player* player)
+    inline bool IsPlayerBuffed(Player* player)
     {
         return _playerBuffedStore.find(player->GetGUID()) != _playerBuffedStore.end();
     }
 
-    bool IsPlayerPetBuffed(Player* player)
+    inline bool IsPlayerPetBuffed(Player* player)
     {
         return _petsBuffedStore.find(player->GetGUID()) != _petsBuffedStore.end();
     }
 
-    uint32 GetPlayerCountInInstance(Player* player)
+    inline uint32 GetPlayerCountInInstance(Player* player)
     {
         uint32 count = 0;
 
@@ -195,7 +201,7 @@ private:
         return !count ? 1 : count;
     }
 
-    uint32 GetSpellForDungeon(uint32 diff, bool isRaid, uint32 playerCount)
+    inline uint32 GetSpellForDungeon(uint32 diff, bool isRaid, uint32 playerCount)
     {
         auto instanceDiff = GetInstanceDiff(diff, isRaid);
         if (!instanceDiff)
@@ -217,7 +223,7 @@ private:
         return 0;
     }
 
-    void ApplyBuffForPlayer(Player* player, uint8 diff, bool isRaid)
+    inline void ApplyBuffForPlayer(Player* player, uint8 diff, bool isRaid)
     {
         ClearBuffForPlayer(player);
 
@@ -235,7 +241,7 @@ private:
         }
     }
 
-    void ClearBuffForPlayer(Player* player)
+    inline void ClearBuffForPlayer(Player* player)
     {
         auto const& itrPlayer = _playerBuffedStore.find(player->GetGUID());
         if (itrPlayer != _playerBuffedStore.end())
@@ -267,7 +273,7 @@ private:
         }
     }
 
-    Optional<InstanceDiff> GetInstanceDiff(uint32 diff, bool isRaid)
+    inline Optional<InstanceDiff> GetInstanceDiff(uint32 diff, bool isRaid)
     {
         if (!isRaid && !diff)
             return InstanceDiff::DungeonDefault;
@@ -298,9 +304,6 @@ public:
 
     void OnMapChanged(Player* player) override
     {
-        if (!MOD_CONF_GET_BOOL("IB.Enable"))
-            return;
-
         if (!player)
             return;
 
@@ -314,9 +317,6 @@ public:
 
     void OnAfterResurrect(Player* player, float /*restore_percent*/, bool /*applySickness*/) override
     {
-        if (!MOD_CONF_GET_BOOL("IB.Enable"))
-            return;
-
         if (!player)
             return;
 
