@@ -15,8 +15,47 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "ScriptObject.h"
+// This is an open source non-commercial project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+
+#include "Chat.h"
 #include "QuestConditions.h"
+#include "ScriptObject.h"
+
+using namespace Warhead::ChatCommands;
+
+class QuestConditions_CS : public CommandScript
+{
+public:
+    QuestConditions_CS() : CommandScript("QuestConditions_CS") { }
+
+    ChatCommandTable GetCommands() const override
+    {
+        static ChatCommandTable questConditionsCommandTable =
+        {
+            { "info", HandleQCInfoCommand, SEC_ADMINISTRATOR,  Console::Yes }
+        };
+
+        static ChatCommandTable commandTable =
+        {
+            { "qc", questConditionsCommandTable }
+        };
+
+        return commandTable;
+    }
+
+    static bool HandleQCInfoCommand(ChatHandler* handler, uint32 questID)
+    {
+        if (!sQuestConditionsMgr->IsEnable())
+        {
+            handler->PSendSysMessage("> Module disabled");
+            return true;
+        }
+
+        sQuestConditionsMgr->SendQuestConditionInfo(handler, questID);
+        return true;
+    }
+};
 
 class QuestConditions_BG : public BGScript
 {
@@ -99,6 +138,7 @@ public:
 // Group all custom scripts
 void AddSC_QuestConditions()
 {
+    new QuestConditions_CS();
     new QuestConditions_BG();
     new QuestConditions_Player();
     new QuestConditions_World();

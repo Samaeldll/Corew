@@ -15,14 +15,19 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+// This is an open source non-commercial project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+
 #ifndef _QUEST_CONDITIONS_H_
 #define _QUEST_CONDITIONS_H_
 
 #include "ObjectGuid.h"
 #include "SharedDefines.h"
+#include <mutex>
 #include <unordered_map>
 
 class Battleground;
+class ChatHandler;
 class Player;
 class Item;
 class Spell;
@@ -58,8 +63,8 @@ struct QuestCondition
     uint32 CompleteQuestID{ 0 };
     uint32 EquipItemID{ 0 };
 
-    bool IsFoundConditionForType(QuestConditionType type) const;
-    bool IsValidConditionForType(QuestConditionType type, uint32 value) const;
+    [[nodiscard]] bool IsFoundConditionForType(QuestConditionType type) const;
+    [[nodiscard]] bool IsValidConditionForType(QuestConditionType type, uint32 value) const;
 };
 
 using QuestConditions = std::unordered_map<uint32, QuestCondition>;
@@ -72,6 +77,8 @@ public:
     void Initialize();
     void LoadConfig(bool reload);
 
+    inline bool IsEnable() { return _isEnable; }
+
     // Hooks
     bool CanPlayerCompleteQuest(Player* player, Quest const* questInfo);
     void OnPlayerCompleteQuest(Player* player, Quest const* quest);
@@ -81,6 +88,9 @@ public:
     void OnPlayerItemEquip(Player* player, Item* item);
     void OnPlayerAchievementComplete(Player* player, AchievementEntry const* achievement);
     void OnBattlegoundEnd(Battleground* bg, TeamId winnerTeam);
+
+    // Chat commands
+    void SendQuestConditionInfo(ChatHandler* handler, uint32 questID);
 
     // Add/Delete QC data
     void OnPlayerLogin(Player* player);
@@ -95,6 +105,7 @@ private:
     QuestConditions* GetPlayerConditions(ObjectGuid playerGuid);
     QuestCondition* MakeQuestConditionForPlayer(ObjectGuid playerGuid, uint32 questID);
     void SavePlayerConditionToDB(ObjectGuid playerGuid, uint32 questID);
+    void DeleteQuestConditionsHistory(ObjectGuid playerGuid, uint32 questID);
 
     uint32 const* GetKilledMonsterCredit(uint32 value, QuestConditionType type);
 
@@ -104,6 +115,7 @@ private:
     QuestConditions _conditions;
     std::unordered_map<ObjectGuid, QuestConditions> _playerConditions;
     std::unordered_map<uint64, uint32> _kmc;
+    std::mutex _playerConditionsMutex;
 };
 
 #define sQuestConditionsMgr QuestConditionsMgr::instance()

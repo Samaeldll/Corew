@@ -157,7 +157,6 @@ Player::Player(WorldSession* session): Unit(true), m_mover(this)
 #pragma warning(default:4355)
 #endif
 
-    m_speakTime = 0;
     m_speakCount = 0;
 
     m_objectType |= TYPEMASK_PLAYER;
@@ -8936,7 +8935,7 @@ void Player::RemovePet(Pet* pet, PetSaveMode mode, bool returnreagent)
             return;
     }
 
-    if (returnreagent && (pet || m_temporaryUnsummonedPetNumber) && !InBattleground())
+    if (returnreagent && (pet || (m_temporaryUnsummonedPetNumber && (!m_session || !m_session->PlayerLogout()))) && !InBattleground())
     {
         //returning of reagents only for players, so best done here
         uint32 spellId = pet ? pet->GetUInt32Value(UNIT_CREATED_BY_SPELL) : m_oldpetspell;
