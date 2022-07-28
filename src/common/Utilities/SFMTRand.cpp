@@ -15,6 +15,9 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+// This is an open source non-commercial project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+
 #include "SFMTRand.h"
 #include "Timer.h"
 #include <array>
@@ -78,12 +81,12 @@ uint32 SFMTRand::RandomUInt32()                            // Output random bits
     return sfmt_genrand_uint32(&_state);
 }
 
-void* SFMTRand::operator new(size_t size, std::nothrow_t const&)
+void* SFMTRand::operator new(size_t size, std::nothrow_t)
 {
     return _mm_malloc(size, 16);
 }
 
-void SFMTRand::operator delete(void* ptr, std::nothrow_t const&)
+void SFMTRand::operator delete(void* ptr, std::nothrow_t)
 {
     _mm_free(ptr);
 }
@@ -98,12 +101,12 @@ void SFMTRand::operator delete(void* ptr)
     _mm_free(ptr);
 }
 
-void* SFMTRand::operator new[](size_t size, std::nothrow_t const&)
+void* SFMTRand::operator new[](size_t size, std::nothrow_t)
 {
     return _mm_malloc(size, 16);
 }
 
-void SFMTRand::operator delete[](void* ptr, std::nothrow_t const&)
+void SFMTRand::operator delete[](void* ptr, std::nothrow_t)
 {
     _mm_free(ptr);
 }

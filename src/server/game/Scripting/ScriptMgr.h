@@ -64,6 +64,7 @@ class OutdoorPvP;
 class Pet;
 class Player;
 class Quest;
+class Roll;
 class Spell;
 class SpellCastTargets;
 class SpellInfo;
@@ -88,10 +89,11 @@ enum EncounterCreditType : uint8;
 enum InventoryResult : uint8;
 enum MailCheckMask : uint8;
 enum PetType : uint8;
-enum WeaponAttackType : uint8;
-enum WeatherState : uint32;
+enum RollVote : uint8;
 enum ShutdownExitCode : uint8;
 enum ShutdownMask : uint8;
+enum WeaponAttackType : uint8;
+enum WeatherState : uint32;
 
 struct AchievementCriteriaEntry;
 struct AchievementEntry;
@@ -113,11 +115,11 @@ struct MapDifficulty;
 struct MapEntry;
 struct MovementInfo;
 struct PvPDifficultyEntry;
+struct QuestStatusData;
 struct ScalingStatValuesEntry;
 struct SpellModifier;
 struct TargetInfo;
 struct VendorItem;
-struct QuestStatusData;
 
 // Dynamic linking class
 class ModuleReference;
@@ -418,6 +420,7 @@ public: /* PlayerScript */
     void OnLootItem(Player* player, Item* item, uint32 count, ObjectGuid lootguid);
     void OnCreateItem(Player* player, Item* item, uint32 count);
     void OnQuestRewardItem(Player* player, Item* item, uint32 count);
+    void OnGroupRollRewardItem(Player* player, Item* item, uint32 count, RollVote voteType, Roll* roll);
     bool OnBeforePlayerQuestComplete(Player* player, uint32 quest_id);
     void OnQuestComputeXP(Player* player, Quest const* quest, uint32& xpValue);
     void OnBeforePlayerDurabilityRepair(Player* player, ObjectGuid npcGUID, ObjectGuid itemGUID, float& discountMod, uint8 guildBank);

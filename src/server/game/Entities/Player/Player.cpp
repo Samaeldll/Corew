@@ -15,6 +15,9 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+// This is an open source non-commercial project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+
 #include "Player.h"
 #include "AccountMgr.h"
 #include "AchievementMgr.h"
@@ -11821,6 +11824,16 @@ bool Player::IsDailyQuestDone(uint32 quest_id)
     }
 
     return false;
+}
+
+bool Player::IsWeeklyQuestDone(uint32 quest_id)
+{
+    return m_weeklyquests.contains(quest_id);
+}
+
+bool Player::IsMonthlyQuestDone(uint32 quest_id)
+{
+    return m_monthlyquests.contains(quest_id);
 }
 
 void Player::SetWeeklyQuestStatus(uint32 quest_id)

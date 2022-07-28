@@ -15,6 +15,9 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+// This is an open source non-commercial project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+
 #include "Errors.h"
 #include "Player.h"
 #include "ScriptMgr.h"
@@ -148,8 +151,8 @@ bool ScriptMgr::OnAllowedForPlayerLootCheck(Player const* player, ObjectGuid sou
 {
     auto ret = IsValidBoolScript<GlobalScript>([&](GlobalScript* script)
     {
-        return script->OnAllowedForPlayerLootCheck(player, source);
+        return !script->OnAllowedForPlayerLootCheck(player, source);
     });
 
-    return ReturnValidBool(ret, true);
+    return ReturnValidBool(ret);
 }

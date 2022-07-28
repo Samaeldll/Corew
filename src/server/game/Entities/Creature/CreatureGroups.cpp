@@ -15,6 +15,9 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+// This is an open source non-commercial project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+
 #include "CreatureGroups.h"
 #include "Creature.h"
 #include "CreatureAI.h"
@@ -381,4 +384,41 @@ void CreatureGroup::LeaderMoveTo(float x, float y, float z, bool run)
             member->SetHomePosition(dx, dy, dz, pathAngle);
         }
     }
+}
+
+void CreatureGroup::RespawnFormation(bool force)
+{
+    for (auto const& itr : m_members)
+    {
+        if (itr.first && !itr.first->IsAlive())
+        {
+            itr.first->Respawn(force);
+        }
+    }
+}
+
+bool CreatureGroup::IsFormationInCombat()
+{
+    for (auto const& itr : m_members)
+    {
+        if (itr.first && itr.first->IsInCombat())
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool CreatureGroup::IsAnyMemberAlive()
+{
+    for (auto const& itr : m_members)
+    {
+        if (itr.first && itr.first->IsAlive())
+        {
+            return true;
+        }
+    }
+
+    return false;
 }

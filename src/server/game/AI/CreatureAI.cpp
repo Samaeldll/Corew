@@ -15,6 +15,9 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+// This is an open source non-commercial project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+
 #include "CreatureAI.h"
 #include "AreaBoundary.h"
 #include "Creature.h"
@@ -28,6 +31,7 @@
 #include "Vehicle.h"
 #include "Language.h"
 #include "ScriptMgr.h"
+#include "ZoneScript.h"
 
 class PhasedRespawn : public BasicEvent
 {
@@ -308,6 +312,9 @@ bool CreatureAI::_EnterEvadeMode(EvadeReason /*why*/)
     me->ResetPlayerDamageReq();
     me->SetLastDamagedTime(0);
     me->SetCannotReachTarget();
+
+    if (ZoneScript* zoneScript = me->GetZoneScript() ? me->GetZoneScript() : (ZoneScript*)me->GetInstanceScript())
+        zoneScript->OnCreatureEvade(me);
 
     if (me->IsInEvadeMode())
     {

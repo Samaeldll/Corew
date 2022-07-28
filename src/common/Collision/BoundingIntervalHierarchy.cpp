@@ -15,6 +15,9 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+// This is an open source non-commercial project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+
 #include "BoundingIntervalHierarchy.h"
 
 #ifdef _MSC_VER
@@ -46,11 +49,13 @@ void BIH::subdivide(int left, int right, std::vector<uint32>& tempTree, buildDat
         createNode(tempTree, nodeIndex, left, right);
         return;
     }
+
     // calculate extents
     int axis = -1, prevAxis, rightOrig;
-    float clipL = G3D::fnan(), clipR = G3D::fnan(), prevClip = G3D::fnan();
-    float split = G3D::fnan(), prevSplit;
+    float clipL{ G3D::fnan() }, clipR{ clipL }, prevClip{ clipL }, split{ clipL };
+    float prevSplit{ clipL };
     bool wasLeft = true;
+
     while (true)
     {
         prevAxis = axis;

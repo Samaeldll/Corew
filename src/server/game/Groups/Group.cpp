@@ -15,6 +15,9 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+// This is an open source non-commercial project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+
 #include "Group.h"
 #include "Battleground.h"
 #include "BattlegroundMgr.h"
@@ -1449,7 +1452,8 @@ void Group::CountTheRoll(Rolls::iterator rollI, Map* allowedMap)
                         roll->getLoot()->NotifyItemRemoved(roll->itemSlot);
                         roll->getLoot()->unlootedCount--;
                         AllowedLooterSet looters = item->GetAllowedLooters();
-                        player->StoreNewItem(dest, roll->itemid, true, item->randomPropertyId, looters);
+                        Item* _item = player->StoreNewItem(dest, roll->itemid, true, item->randomPropertyId, looters);
+                        sScriptMgr->OnGroupRollRewardItem(player, _item, _item->GetCount(), NEED, roll);
                         player->UpdateLootAchievements(item, roll->getLoot());
                     }
                     else
@@ -1517,7 +1521,8 @@ void Group::CountTheRoll(Rolls::iterator rollI, Map* allowedMap)
                             roll->getLoot()->NotifyItemRemoved(roll->itemSlot);
                             roll->getLoot()->unlootedCount--;
                             AllowedLooterSet looters = item->GetAllowedLooters();
-                            player->StoreNewItem(dest, roll->itemid, true, item->randomPropertyId, looters);
+                            Item* _item = player->StoreNewItem(dest, roll->itemid, true, item->randomPropertyId, looters);
+                            sScriptMgr->OnGroupRollRewardItem(player, _item, _item->GetCount(), GREED, roll);
                             player->UpdateLootAchievements(item, roll->getLoot());
                         }
                         else

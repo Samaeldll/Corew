@@ -15,6 +15,9 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+// This is an open source non-commercial project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+
 #include "MapTree.h"
 #include "Errors.h"
 #include "Log.h"
@@ -121,7 +124,7 @@ namespace VMAP
     }
 
     StaticMapTree::StaticMapTree(uint32 mapID, const std::string& basePath)
-        : iMapID(mapID), iIsTiled(false), iTreeValues(0), iBasePath(basePath)
+        : iMapID(mapID), iBasePath(basePath)
     {
         if (iBasePath.length() > 0 && iBasePath[iBasePath.length() - 1] != '/' && iBasePath[iBasePath.length() - 1] != '\\')
         {

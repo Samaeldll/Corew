@@ -15,6 +15,9 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+// This is an open source non-commercial project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+
 #include "Log.h"
 #include "Config.h"
 #include "ConsoleChannel.h"
@@ -128,8 +131,6 @@ void Warhead::Log::CreateLoggerFromConfig(std::string_view configLoggerName)
         return;
     }
 
-    LogLevel level = LogLevel::Fatal;
-
     std::string const& options = sConfigMgr->GetOption<std::string>(std::string{ configLoggerName }, "");
     auto loggerName = configLoggerName.substr(PREFIX_LOGGER_LENGTH);
 
@@ -153,7 +154,7 @@ void Warhead::Log::CreateLoggerFromConfig(std::string_view configLoggerName)
         return;
     }
 
-    level = static_cast<LogLevel>(*loggerLevel);
+    LogLevel level = static_cast<LogLevel>(*loggerLevel);
 
     if (level > highestLogLevel)
         highestLogLevel = level;
@@ -192,8 +193,6 @@ void Warhead::Log::CreateChannelsFromConfig(std::string_view logChannelName)
         return;
     }
 
-    LogLevel level = LogLevel::Fatal;
-
     std::string const& options = sConfigMgr->GetOption<std::string>(std::string{ logChannelName }, "");
     auto channelName = logChannelName.substr(PREFIX_CHANNEL_LENGTH);
 
@@ -227,7 +226,7 @@ void Warhead::Log::CreateChannelsFromConfig(std::string_view logChannelName)
         return;
     }
 
-    level = static_cast<LogLevel>(*loggerLevel);
+    LogLevel level = static_cast<LogLevel>(*loggerLevel);
 
     auto const& pattern = tokens[2];
     if (pattern.empty())

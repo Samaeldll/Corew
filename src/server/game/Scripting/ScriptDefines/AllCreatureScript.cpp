@@ -15,6 +15,9 @@
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+// This is an open source non-commercial project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++ and C#: http://www.viva64.com
+
 #include "Errors.h"
 #include "ScriptMgr.h"
 #include "ScriptMgrMacros.h"
@@ -65,5 +68,5 @@ bool ScriptMgr::CanCreatureSendListInventory(Player* player, Creature* creature,
         return !script->CanCreatureSendListInventory(player, creature, vendorEntry);
     });
 
-    return ReturnValidBool(ret, true);
+    return ReturnValidBool(ret);
 }
